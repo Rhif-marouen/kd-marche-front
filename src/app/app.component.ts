@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
+import { HeaderComponent } from './shared/components/header/header.component';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-root', // ✅ Sélecteur racine
   standalone: true,
-  imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  imports: [HeaderComponent, RouterOutlet],
+  template: `
+    <app-header></app-header>
+    <router-outlet></router-outlet>
+  `
 })
-export class AppComponent {
-  title = 'kd-marche-frontend';
-}
+export class AppComponent {}

@@ -1,0 +1,62 @@
+<div class="login-container">
+    <h1 class="title">Connexion</h1>
+    
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input
+          matInput
+          type="email"
+          formControlName="email"
+          placeholder="exemple@email.com"
+          required
+        >
+        <mat-error *ngIf="email.errors?.['required']">
+          L'email est obligatoire
+        </mat-error>
+        <mat-error *ngIf="email.errors?.['email']">
+          Format d'email invalide
+        </mat-error>
+      </mat-form-field>
+  
+      <mat-form-field appearance="outline">
+        <mat-label>Mot de passe</mat-label>
+        <input
+          matInput
+          [type]="showPassword() ? 'text' : 'password'"
+          formControlName="password"
+          placeholder="••••••••"
+          required
+        >
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          (click)="togglePasswordVisibility()"
+          [attr.aria-label]="showPassword() ? 'Cacher le mot de passe' : 'Afficher le mot de passe'"
+        >
+          <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        <mat-error *ngIf="password.errors?.['required']">
+          Le mot de passe est obligatoire
+        </mat-error>
+        <mat-error *ngIf="password.errors?.['minlength']">
+          Minimum 8 caractères
+        </mat-error>
+      </mat-form-field>
+  
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="loginForm.invalid || isLoading()"
+      >
+        <span *ngIf="!isLoading()">Se connecter</span>
+        <mat-spinner *ngIf="isLoading()" diameter="24"></mat-spinner>
+      </button>
+    </form>
+  
+    <div class="links">
+      <a routerLink="/auth/register" mat-button>
+        Créer un compte
+      </a>
