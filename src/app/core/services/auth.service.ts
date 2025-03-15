@@ -61,18 +61,19 @@ export class AuthService {
   }
 
   register(userData: { name: string; email: string; password: string }): Observable<string> {
-    return this.http.post<{ token: string }>(
+    return this.http.post<{ user: User; token: string }>(
       `${environment.apiUrl}/auth/register`,
       userData,
       { headers: environment.defaultHeaders }
     ).pipe(
       tap(response => {
         localStorage.setItem(this.tokenKey, response.token);
-        this.fetchUserProfile().subscribe();
+        this.currentUser.set(response.user); // Utilisez l'utilisateur de la réponse
       }),
       map(response => response.token),
       catchError(error => {
-        this.snackBar.open("Erreur d'inscription", 'Fermer', { duration: 3000 });
+        console.error('Erreur d\'inscription:', error);
+        this.snackBar.open("Erreur d'inscription: " + error.error.message, 'Fermer', { duration: 5000 });
         return throwError(() => error);
       })
     );
