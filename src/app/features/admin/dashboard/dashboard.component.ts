@@ -1,4 +1,4 @@
-// dashboard.component.ts
+
 import { Component } from '@angular/core';
 import { AdminService } from '../../../core/services/admin.service';
 import { CommonModule } from '@angular/common';
@@ -41,12 +41,14 @@ import { CommonModule } from '@angular/common';
     </div>
   `
 })
+
 export class DashboardComponent {
-  stats: any;
+  stats: { users?: number, products?: number, orders?: number } = {};
 
   constructor(private adminService: AdminService) {
-    this.adminService.getDashboardStats().subscribe(stats => {
-      this.stats = stats;
+    this.adminService.getDashboardStats().subscribe({
+      next: (response: any) => this.stats = response,
+      error: (error) => console.error('Erreur stats:', error)
     });
   }
 }

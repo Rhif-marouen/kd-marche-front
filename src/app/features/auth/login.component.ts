@@ -49,7 +49,7 @@ export class LoginComponent {
     return this.loginForm.controls.password;
   }
 
-  onSubmit() {
+/*  onSubmit() {
     if (this.loginForm.invalid) return;
     
     this.isLoading.set(true);
@@ -68,7 +68,24 @@ export class LoginComponent {
         this.snackBar.open('Identifiants incorrects', 'Fermer', { duration: 3000 });
       }
     });
-  }
+  } */
+
+    onSubmit() {
+      if (this.loginForm.invalid) return;
+    
+      this.isLoading.set(true);
+      
+      this.authService.login(this.loginForm.getRawValue()).subscribe({
+        next: (user) => {
+          this.router.navigate([user.is_admin ? '/admin/dashboard' : '/profile']);
+          this.isLoading.set(false);
+        },
+        error: () => {
+          this.isLoading.set(false);
+          this.snackBar.open('Identifiants incorrects', 'Fermer', { duration: 3000 });
+        }
+      });
+    }
   togglePasswordVisibility() {
     this.showPassword.update(value => !value);
   }

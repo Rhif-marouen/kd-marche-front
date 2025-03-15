@@ -5,11 +5,17 @@ import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { catchError, map, Observable, switchMap, tap, throwError } from 'rxjs';
+import { User } from '../models/user.model';
+
+interface LoginResponse {
+  token: string;
+  user: User;
+}
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly tokenKey = 'auth_token';
-  private currentUser = signal<any | null>(null);
+  private currentUser = signal<User | null>(null);
   public user = this.currentUser.asReadonly();
 
   constructor(
@@ -29,56 +35,52 @@ export class AuthService {
     }
   }
 
-  // auth.service.ts
-login(credentials: { email: string; password: string }): Observable<{ is_admin: boolean }> {
-  return this.http.post<{ token: string, is_admin: boolean }>(
-    `${environment.apiUrl}/auth/login`,
-    credentials,
-    { headers: environment.defaultHeaders }
-  ).pipe(
-    tap(response => {
-      localStorage.setItem(this.tokenKey, response.token);
-      this.currentUser.set({ is_admin: response.is_admin }); // Mise à jour immédiate
-    }),
-    map(response => ({ is_admin: response.is_admin })), // Transformation
-    catchError(error => this.handleError(error, 'Échec de la connexion'))
-  );
-}
-  
-  private fetchUserProfile(): Observable<void> {
-    return this.http.get<any>(`${environment.apiUrl}/user`).pipe(
+  login(credentials: { email: string; password: string }): Observable<User> {
+    return this.http.post<LoginResponse>(
+      `${environment.apiUrl}/auth/login`,
+      credentials,
+      { headers: environment.defaultHeaders }
+    ).pipe(
+      tap(response => {
+        localStorage.setItem(this.tokenKey, response.token);
+        this.currentUser.set(response.user);
+      }),
+      map(response => response.user),
+      catchError(error => this.handleError(error, 'Échec de la connexion'))
+    );
+  }
+
+  private fetchUserProfile(): Observable<User> {
+    return this.http.get<User>(`${environment.apiUrl}/user`).pipe(
       tap(user => this.currentUser.set(user)),
-      map(() => {}), // Conversion en Observable<void>
       catchError(error => {
         this.clearAuthState();
         return throwError(() => error);
       })
     );
   }
-  // auth.service.ts
-register(userData: { name: string; email: string; password: string }): Observable<{ token: string }> {
-  return this.http.post<{ token: string }>(
-    `${environment.apiUrl}/auth/register`, // Utiliser le bon endpoint
-    userData,
-    { headers: environment.defaultHeaders }
-  ).pipe(
-    tap(response => {
-      localStorage.setItem(this.tokenKey, response.token);
-      this.fetchUserProfile().subscribe();
-    }),
-    catchError(error => {
-      this.snackBar.open("Erreur d'inscription", 'Fermer', { duration: 3000 });
-      return throwError(() => error);
-    })
-  );
-}
-  
 
-
+  register(userData: { name: string; email: string; password: string }): Observable<string> {
+    return this.http.post<{ token: string }>(
+      `${environment.apiUrl}/auth/register`,
+      userData,
+      { headers: environment.defaultHeaders }
+    ).pipe(
+      tap(response => {
+        localStorage.setItem(this.tokenKey, response.token);
+        this.fetchUserProfile().subscribe();
+      }),
+      map(response => response.token),
+      catchError(error => {
+        this.snackBar.open("Erreur d'inscription", 'Fermer', { duration: 3000 });
+        return throwError(() => error);
+      })
+    );
+  }
 
   logout(): Observable<void> {
     return this.http.post<void>(
-      `${environment.apiUrl}/auth/logout`, // <-- Ajouter /auth/
+      `${environment.apiUrl}/auth/logout`, 
       {},
       { 
         headers: this.getAuthHeaders(),
@@ -89,13 +91,14 @@ register(userData: { name: string; email: string; password: string }): Observabl
       catchError(error => this.handleError(error, 'Erreur de déconnexion'))
     );
   }
-  
+
   private getAuthHeaders(): HttpHeaders {
     return new HttpHeaders({
       'Authorization': `Bearer ${this.getToken()}`,
       'Accept': 'application/json'
     });
   }
+
   public clearAuthState(): void {
     localStorage.removeItem(this.tokenKey);
     this.currentUser.set(null);
