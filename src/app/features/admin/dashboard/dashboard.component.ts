@@ -1,7 +1,7 @@
-
-import { Component } from '@angular/core';
-import { AdminService } from '../../../core/services/admin.service';
+// dashboard.component.ts
+import { Component, Signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AdminService, DashboardStats } from '../../../core/services/admin.service';
 
 @Component({
   standalone: true,
@@ -11,29 +11,42 @@ import { CommonModule } from '@angular/common';
       <h2>Tableau de bord Admin</h2>
       
       <div class="row mt-4">
-        <div class="col-md-4">
+        <!-- Utilisateurs -->
+        <div class="col-md-3">
           <div class="card text-white bg-primary mb-3">
             <div class="card-body">
               <h5 class="card-title">Utilisateurs</h5>
-              <p class="card-text">{{ stats?.users || 0 }}</p>
+              <p class="card-text">{{ stats().users }}</p>
             </div>
           </div>
         </div>
-        
-        <div class="col-md-4">
+
+        <!-- Produits -->
+        <div class="col-md-3">
           <div class="card text-white bg-success mb-3">
             <div class="card-body">
               <h5 class="card-title">Produits</h5>
-              <p class="card-text">{{ stats?.products || 0 }}</p>
+              <p class="card-text">{{ stats().products }}</p>
             </div>
           </div>
         </div>
-        
-        <div class="col-md-4">
+
+        <!-- Commandes -->
+        <div class="col-md-3">
           <div class="card text-white bg-info mb-3">
             <div class="card-body">
               <h5 class="card-title">Commandes</h5>
-              <p class="card-text">{{ stats?.orders || 0 }}</p>
+              <p class="card-text">{{ stats().orders }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Revenus -->
+        <div class="col-md-3">
+          <div class="card text-white bg-warning mb-3">
+            <div class="card-body">
+              <h5 class="card-title">Revenus</h5>
+              <p class="card-text">{{ stats().revenue | currency:'EUR' }}</p>
             </div>
           </div>
         </div>
@@ -41,14 +54,8 @@ import { CommonModule } from '@angular/common';
     </div>
   `
 })
-
 export class DashboardComponent {
-  stats: { users?: number, products?: number, orders?: number } = {};
+  stats: Signal<DashboardStats> = this.adminService.stats;
 
-  constructor(private adminService: AdminService) {
-    this.adminService.getDashboardStats().subscribe({
-      next: (response: any) => this.stats = response,
-      error: (error) => console.error('Erreur stats:', error)
-    });
-  }
+  constructor(private adminService: AdminService) {}
 }
