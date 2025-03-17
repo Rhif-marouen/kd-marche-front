@@ -24,6 +24,9 @@ export class AdminService {
 
   constructor(
     private http: HttpClient,
-    private authService: AuthService
+    private authService: AuthService,
+   
   ) {}
 }
+
+export { DashboardStats };

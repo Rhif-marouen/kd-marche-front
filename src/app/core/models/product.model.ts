@@ -1,4 +1,4 @@
-
+/*
 export interface PaginatedResponse<T> {
   data: T[];
   meta: {
@@ -40,4 +40,32 @@ export interface StockHistory {
   quantity: number;
   created_at: string;
   product_id?: number; // Référence optionnelle
+} */
+
+  // models/product.model.ts
+export interface PublicProduct {
+  id: number;
+  name: string;
+  description: string;
+  price: number; // Ajouter les champs manquants
+  category: string;
+  quality?: string;
+  stock: number;
+  image_url: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Product extends PublicProduct {
+
+}
+
+export interface PaginatedResponse<T> {
+  data: T[];
+  meta: {
+    current_page: number;
+    per_page: number;
+    total: number;
+    last_page: number;
+  };
 }

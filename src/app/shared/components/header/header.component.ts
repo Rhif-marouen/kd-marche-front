@@ -3,17 +3,22 @@ import { Component, inject } from '@angular/core';
 import { AuthService } from '../../../core/services/auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   standalone: true, // <-- Ajouter cette ligne
-  imports: [CommonModule, RouterLink], // <-- Importer les dépendances
+  imports: [CommonModule, RouterLink,MatIconModule], // <-- Importer les dépendances
   selector: 'app-header',
   template: `
     <nav>
+  
       <a routerLink="/products">Produits</a>
       <div *ngIf="authService.isLoggedIn()">
         <a routerLink="/profile" *ngIf="!authService.isAdmin()">Profil</a>
-        <a routerLink="/admin/dashboard" *ngIf="authService.isAdmin()">Admin</a>
+        <a *ngIf="authService.isAdmin()" routerLink="/admin/dashboard">
+      <mat-icon>admin_panel_settings</mat-icon>
+      Administration
+    </a>
         <button (click)="logout()">Déconnexion</button>
       </div>
       <div *ngIf="!authService.isLoggedIn()">

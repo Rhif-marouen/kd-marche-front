@@ -17,21 +17,23 @@ export class ProductService {
 
   getProduct(id: number): Observable<Product> {
     return this.http.get<Product>(
-      `${environment.apiUrl}/admin/products/${id}` // Utiliser le bon endpoint
+      `${environment.apiUrl}/products/${id}` // Utiliser le bon endpoint
     );
   }
-
+/*
   getAdminProducts(page: number = 1): Observable<PaginatedResponse<Product>> {
     return this.http.get<PaginatedResponse<Product>>(
       `${environment.apiUrl}/admin/products`,
       { params: { page } }
     );
-  }
+  }  
 
   createProduct(productData: FormData): Observable<Product> {
     return this.http.post<Product>(
       `${environment.apiUrl}/admin/products`,
       productData
     );
-  }
+  } */
 }
+
+export { PaginatedResponse };

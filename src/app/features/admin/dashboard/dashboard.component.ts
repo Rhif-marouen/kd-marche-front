@@ -1,11 +1,15 @@
 // dashboard.component.ts
 import { Component, Signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AdminService, DashboardStats } from '../../../core/services/admin.service';
-
+import { AdminService } from '../../../core/services/admin.service';
+import { DashboardStats } from '../../../core/models/dashboard-stats.model';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { RouterModule } from '@angular/router';
 @Component({
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,MatIconModule,RouterModule, MatCardModule, MatButtonModule],
   template: `
     <div class="container mt-4">
       <h2>Tableau de bord Admin</h2>
@@ -52,6 +56,19 @@ import { AdminService, DashboardStats } from '../../../core/services/admin.servi
         </div>
       </div>
     </div>
+ 
+
+<div class="admin-actions">
+  <button routerLink="/admin/products">
+    <mat-icon>inventory</mat-icon>
+    Gérer les produits
+  </button>
+  
+  <button routerLink="/admin/users">
+    <mat-icon>people</mat-icon>
+    Gérer les utilisateurs
+  </button>
+</div>
   `
 })
 export class DashboardComponent {
