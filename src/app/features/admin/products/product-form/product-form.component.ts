@@ -29,7 +29,7 @@ import { MatInputModule } from '@angular/material/input';
     MatDialogContent,
     MatDialogActions,
   ],
-  
+
   template: `
     <h2 mat-dialog-title>{{ data.product ? 'Modifier' : 'Créer' }} un produit</h2>
     <form [formGroup]="form" (ngSubmit)="submit()">
@@ -86,7 +86,7 @@ import { MatInputModule } from '@angular/material/input';
         <mat-form-field>
   <mat-label>Qualité produit</mat-label>
   <mat-select formControlName="quality">
-    <mat-option *ngFor="let q of qualities" [value]="q">
+    <mat-option *ngFor="let q of quality" [value]="q">
       {{ q }}
     </mat-option>
   </mat-select>
@@ -113,10 +113,10 @@ export class ProductFormComponent {
   form: FormGroup;
   selectedFile?: File;
   categories: Category[] = [];
-  qualities = ['A', 'B', 'C', 'D', 'E'];
+  quality: string[] = ['A', 'B', 'C', 'D', 'E'];
 
   constructor(
-  
+
     private categoriesService: CategoriesService,
     private fb: FormBuilder,
     private productsService: AdminProductsService,
@@ -126,11 +126,11 @@ export class ProductFormComponent {
     console.log('Données du produit reçues:', data.product);
     this.form = this.fb.group({
       name: [this.data.product?.name || '', Validators.required],
-      price: [this.data.product?.price || '', [Validators.required, Validators.min(0.01)]],
-      category_id: [this.data.product?.category?.id || '', Validators.required], // Extrait de l'objet category
+      price: [this.data.product?.price || 0, [Validators.required, Validators.min(0.01)]], 
+      category_id: [this.data.product?.category_id || '', Validators.required],
       stock: [this.data.product?.stock || 0, [Validators.required, Validators.min(0)]],
       description: [this.data.product?.description || '', Validators.required],
-      quality: [this.data.product?.quality || '', Validators.required] 
+      quality: [this.data.product?.quality || '', Validators.required]
     });
   }
 
@@ -141,19 +141,22 @@ export class ProductFormComponent {
     }
   }
 
-  submit(): void {
-    if (this.form.invalid) return;
+// product-form.component.ts
+submit(): void {
+  if (this.form.invalid) return;
 
-    const formData = new FormData();
-    formData.append('name', this.form.value.name);
-    formData.append('price', this.form.value.price);
-    formData.append('category_id', this.form.value.category_id); // Ajouter la catégorie
-    formData.append('stock', this.form.value.stock);
-    formData.append('description', this.form.value.description);
-    formData.append('quality', this.form.value.quality);
-    if (this.selectedFile) {
-      formData.append('image', this.selectedFile, this.selectedFile.name);
-    }
+  const formData = new FormData();
+  formData.append('name', this.form.value.name);
+  formData.append('price', Number(this.form.value.price).toFixed(2)); // Conversion en nombre
+  formData.append('category_id', String(this.form.value.category_id));
+  formData.append('stock', String(Math.floor(this.form.value.stock)));
+  formData.append('description', this.form.value.description);
+  formData.append('quality', this.form.value.quality);
+
+  if (this.selectedFile) {
+    formData.append('image', this.selectedFile); // Retirer .name
+  }
+
     const request = this.data.product
       ? this.productsService.updateProduct(this.data.product.id, formData)
       : this.productsService.createProduct(formData);
@@ -180,7 +183,7 @@ export class ProductFormComponent {
         alert('Impossible de charger les catégories');
       }
     });
-      }
-    }
+  }
+}
 
 

@@ -28,11 +28,10 @@ export class AdminProductsService {
     return this.http.get<Product>(`${this.apiUrl}/${id}`);
   }
 
-updateProduct(id: number, formData: FormData): Observable<Product> {
-  return this.http.put<Product>(`${this.apiUrl}/${id}`, formData, {
-    headers: { 'Content-Type': 'multipart/form-data' } // Important pour les fichiers
-  });
-}
+  updateProduct(id: number, formData: FormData): Observable<any> {
+    formData.append('_method', 'PUT'); // <-- Ajouter cette ligne
+    return this.http.post(`${this.apiUrl}/${id}`, formData);
+  }
 
   deleteProduct(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
