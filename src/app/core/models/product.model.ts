@@ -42,22 +42,26 @@ export interface StockHistory {
   product_id?: number; // Référence optionnelle
 } */
 
+import { Category } from "./category.model";
+
   // models/product.model.ts
 export interface PublicProduct {
   id: number;
   name: string;
   description: string;
   price: number; // Ajouter les champs manquants
-  category: string;
+  category: String;
+  category_id: number;
   quality?: string;
   stock: number;
   image_url: string;
   created_at: string;
   updated_at: string;
+  
 }
 
 export interface Product extends PublicProduct {
-
+  
 }
 
 export interface PaginatedResponse<T> {

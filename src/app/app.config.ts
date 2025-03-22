@@ -1,16 +1,21 @@
-import { ApplicationConfig } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { provideAnimations } from '@angular/platform-browser/animations'; // <-- Remplacer provideAnimationsAsync()
+import { MatDialogModule } from '@angular/material/dialog';
 import { routes } from './app.routes';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
-import { JWT_OPTIONS, JwtHelperService } from '@auth0/angular-jwt';
-import { environment } from '../environments/environment';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { OverlayModule } from '@angular/cdk/overlay';
+
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes),
     provideHttpClient(withInterceptors([authInterceptor])),
-    provideAnimationsAsync()
+    provideAnimations(),
+    provideNativeDateAdapter(),
+    importProvidersFrom(MatDialogModule,OverlayModule )
+    
   ]
 };

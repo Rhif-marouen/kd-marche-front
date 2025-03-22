@@ -1,14 +1,17 @@
-import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule, MatDialogActions, MatDialogContent } from '@angular/material/dialog';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AdminProductsService } from '../../../../core/services/admin-products.service';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
+import { CategoriesService } from '../../../../core/services/categories.service';
+import { Category } from '../../../../core/models/category.model';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-
 @Component({
   selector: 'app-product-form',
   standalone: true,
@@ -17,11 +20,16 @@ import { MatInputModule } from '@angular/material/input';
     ReactiveFormsModule,
     MatIconModule,
     MatFormFieldModule,
+    MatSelectModule,
+    MatOptionModule,
     MatInputModule,
     MatCardModule,
     MatButtonModule,
-    MatDialogModule
+    MatDialogModule,
+    MatDialogContent,
+    MatDialogActions,
   ],
+  
   template: `
     <h2 mat-dialog-title>{{ data.product ? 'Modifier' : 'Créer' }} un produit</h2>
     <form [formGroup]="form" (ngSubmit)="submit()">
@@ -45,6 +53,49 @@ import { MatInputModule } from '@angular/material/input';
             Le prix doit être supérieur à 0
           </mat-error>
         </mat-form-field>
+        <mat-form-field>
+  <mat-label>Catégorie</mat-label>
+  <mat-select formControlName="category_id">
+    <mat-option *ngFor="let category of categories" [value]="category.id">
+      {{ category.name }}
+    </mat-option>
+  </mat-select>
+  <mat-error *ngIf="form.controls['category_id'].invalid">
+    La catégorie est obligatoire
+  </mat-error>
+</mat-form-field>
+        <mat-form-field>
+          <mat-label>Stock</mat-label>
+          <input matInput type="number" formControlName="stock" placeholder="Stock">
+          <mat-error *ngIf="form.controls['stock'].hasError('required')">
+            Le stock est requis
+          </mat-error>
+          <mat-error *ngIf="form.controls['stock'].hasError('min')">
+            Le stock doit être supérieur ou égal à 0
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Description</mat-label>
+          <input matInput type="text" formControlName="description" placeholder=" description">
+          <mat-error *ngIf="form.controls['description'].hasError('required')">
+            La description est requise
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+  <mat-label>Qualité produit</mat-label>
+  <mat-select formControlName="quality">
+    <mat-option *ngFor="let q of qualities" [value]="q">
+      {{ q }}
+    </mat-option>
+  </mat-select>
+  <mat-error *ngIf="form.controls['quality'].invalid">
+    La qualité est obligatoire
+  </mat-error>
+</mat-form-field>
+
+        
 
         <input type="file" (change)="onFileSelected($event)">
       </mat-dialog-content>
@@ -61,16 +112,25 @@ import { MatInputModule } from '@angular/material/input';
 export class ProductFormComponent {
   form: FormGroup;
   selectedFile?: File;
+  categories: Category[] = [];
+  qualities = ['A', 'B', 'C', 'D', 'E'];
 
   constructor(
+  
+    private categoriesService: CategoriesService,
     private fb: FormBuilder,
     private productsService: AdminProductsService,
     public dialogRef: MatDialogRef<ProductFormComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { product?: any }
   ) {
+    console.log('Données du produit reçues:', data.product);
     this.form = this.fb.group({
-      name: [data.product?.name || '', Validators.required],
-      price: [data.product?.price || '', [Validators.required, Validators.min(0.01)]]
+      name: [this.data.product?.name || '', Validators.required],
+      price: [this.data.product?.price || '', [Validators.required, Validators.min(0.01)]],
+      category_id: [this.data.product?.category?.id || '', Validators.required], // Extrait de l'objet category
+      stock: [this.data.product?.stock || 0, [Validators.required, Validators.min(0)]],
+      description: [this.data.product?.description || '', Validators.required],
+      quality: [this.data.product?.quality || '', Validators.required] 
     });
   }
 
@@ -87,15 +147,40 @@ export class ProductFormComponent {
     const formData = new FormData();
     formData.append('name', this.form.value.name);
     formData.append('price', this.form.value.price);
-    if (this.selectedFile) formData.append('image', this.selectedFile);
-
+    formData.append('category_id', this.form.value.category_id); // Ajouter la catégorie
+    formData.append('stock', this.form.value.stock);
+    formData.append('description', this.form.value.description);
+    formData.append('quality', this.form.value.quality);
+    if (this.selectedFile) {
+      formData.append('image', this.selectedFile, this.selectedFile.name);
+    }
     const request = this.data.product
       ? this.productsService.updateProduct(this.data.product.id, formData)
       : this.productsService.createProduct(formData);
 
     request.subscribe({
-      next: () => this.dialogRef.close(true),
-      error: (err: any) => console.error('Erreur:', err)
+      next: () => {
+        this.dialogRef.close(true);
+        alert('Opération réussie !');
+      },
+      error: (err) => {
+        console.error('Détails erreur:', err);
+        alert(`Erreur: ${err.error?.message || 'Une erreur est survenue'}`);
+      }
     });
   }
-}
+  ngOnInit() {
+    this.categoriesService.getCategories().subscribe({
+      next: (res) => {
+        this.categories = res.data;
+        console.log('Catégories chargées:', this.categories); // Debug
+      },
+      error: (err) => {
+        console.error('Erreur de chargement des catégories:', err);
+        alert('Impossible de charger les catégories');
+      }
+    });
+      }
+    }
+
+
