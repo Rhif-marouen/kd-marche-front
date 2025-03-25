@@ -1,0 +1,21 @@
+<div class="checkout-container">
+  <h2>Abonnement Annuel (90€)</h2>
+  
+  <div *ngIf="!success">
+    <!-- Conteneur où Stripe montera l'élément de carte -->
+    <div id="card-element" class="card-element"></div>
+    
+    <button mat-raised-button color="primary" (click)="handleSubscription()" [disabled]="isLoading">
+      {{ isLoading ? 'Traitement...' : 'Payer maintenant' }}
+    </button>
+    
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+  </div>
+  
+  <div *ngIf="success" class="success-message">
+    <mat-icon>check_circle</mat-icon>
+    <p>Paiement réussi ! Votre abonnement est actif.</p>
+  </div>
+</div>

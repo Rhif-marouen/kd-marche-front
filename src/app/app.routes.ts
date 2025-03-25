@@ -3,6 +3,8 @@ import { authGuard } from './core/guards/auth.guard';
 import { adminGuard } from './core/guards/admin.guard';
 import { ProfileComponent } from './features/user/profile/profile.component';
 import { LoginComponent } from './features/auth/login.component';
+import { CheckoutComponent } from './features/checkout/checkout/checkout.component';
+import { paymentGuard } from './core/guards/payment.guard';
 export const routes: Routes = [
   { 
     path: 'products', 
@@ -31,6 +33,11 @@ export const routes: Routes = [
     path: 'profile',
     canActivate: [authGuard],
     component: ProfileComponent 
+  },
+  {
+    path: 'checkout',
+    component: CheckoutComponent,
+    canActivate: [paymentGuard] // Protection par guard
   }
 
   

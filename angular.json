@@ -60,10 +60,18 @@
           "defaultConfiguration": "production"
         },
         "serve": {
+  
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "kd-marche-frontend:build:production"
+              "buildTarget": "kd-marche-frontend:build:production",
+             
+              
+                "headers": {
+                  "Content-Security-Policy": "default-src 'self'; script-src 'self' https://js.stripe.com https://m.stripe.network 'unsafe-eval' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https://*.stripe.com https://fonts.gstatic.com; font-src 'self' https://fonts.gstatic.com; frame-src https://js.stripe.com https://m.stripe.network; worker-src blob: https://m.stripe.network; connect-src 'self' http://localhost:8000 https://api.stripe.com;"
+                }
+              
+
             },
             "development": {
               "buildTarget": "kd-marche-frontend:build:development"

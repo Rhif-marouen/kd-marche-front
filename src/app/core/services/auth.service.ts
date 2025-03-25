@@ -60,7 +60,7 @@ export class AuthService {
     );
   }
 
-  register(userData: { name: string; email: string; password: string }): Observable<string> {
+ /* register(userData: { name: string; email: string; password: string }): Observable<string> {
     return this.http.post<{ user: User; token: string }>(
       `${environment.apiUrl}/auth/register`,
       userData,
@@ -77,7 +77,26 @@ export class AuthService {
         return throwError(() => error);
       })
     );
-  }
+  } */
+
+    // Mettre à jour la méthode register
+register(userData: { name: string; email: string; password: string }): Observable<{ user: User; token: string }> {
+  return this.http.post<{ user: User; token: string }>(
+    `${environment.apiUrl}/auth/register`,
+    userData,
+    { headers: environment.defaultHeaders }
+  ).pipe(
+    tap(response => {
+      localStorage.setItem(this.tokenKey, response.token);
+      this.currentUser.set(response.user);
+    }),
+    catchError(error => {
+      console.error('Erreur d\'inscription:', error);
+      this.snackBar.open("Erreur d'inscription: " + error.error.message, 'Fermer', { duration: 5000 });
+      return throwError(() => error);
+    })
+  );
+}
 
   logout(): Observable<void> {
     return this.http.post<void>(
@@ -121,5 +140,12 @@ export class AuthService {
   private handleError(error: any, message: string): Observable<never> {
     this.snackBar.open(message, 'Fermer', { duration: 5000 });
     return throwError(() => error);
+  }
+
+  updateUserSubscriptionStatus(isActive: boolean) {
+    const currentUser = this.currentUser();
+    if (currentUser) {
+      this.currentUser.set({ ...currentUser, is_active: isActive });
+    }
   }
 }

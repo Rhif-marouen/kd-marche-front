@@ -8,8 +8,9 @@ import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
+  selector: 'app-register',
   standalone: true,
-  imports: [CommonModule,ReactiveFormsModule, MatInputModule, MatButtonModule],
+  imports: [CommonModule, ReactiveFormsModule, MatInputModule, MatButtonModule],
   template: `
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
       <mat-form-field>
@@ -40,9 +41,7 @@ import { CommonModule } from '@angular/common';
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput formControlName="password_confirmation" 
-               type="password" 
-               placeholder="Confirmer le mot de passe">
+        <input matInput formControlName="password_confirmation" type="password" placeholder="Confirmer le mot de passe">
         <mat-error *ngIf="registerForm.get('password_confirmation')?.hasError('required')">
           La confirmation est obligatoire
         </mat-error>
@@ -52,10 +51,7 @@ import { CommonModule } from '@angular/common';
         Les mots de passe ne correspondent pas
       </mat-error>
 
-      <button mat-raised-button 
-              color="primary" 
-              type="submit"
-              [disabled]="registerForm.invalid || isLoading">
+      <button mat-raised-button color="primary" type="submit" [disabled]="registerForm.invalid || isLoading">
         S'inscrire
       </button>
     </form>
@@ -80,10 +76,7 @@ export class RegisterComponent {
   registerForm = this.fb.group({
     name: this.fb.nonNullable.control('', [Validators.required, Validators.minLength(3)]),
     email: this.fb.nonNullable.control('', [Validators.required, Validators.email]),
-    password: this.fb.nonNullable.control('', [
-      Validators.required,
-      Validators.minLength(8)
-    ]),
+    password: this.fb.nonNullable.control('', [Validators.required, Validators.minLength(8)]),
     password_confirmation: this.fb.nonNullable.control('', Validators.required)
   }, { 
     validators: this.passwordMatchValidator 
@@ -111,10 +104,14 @@ export class RegisterComponent {
     this.isLoading = true;
     
     this.authService.register(this.registerForm.getRawValue()).subscribe({
-      next: () => {
+      next: (response) => {  // Ajout du paramètre response
         this.snackBar.open('Inscription réussie !', 'Fermer', { duration: 3000 });
-        this.router.navigate(['/login']);
-        this.isLoading = false;
+        this.router.navigate(['/checkout'], { // Redirection vers le paiement
+          state: { 
+            userId: response.user.id,
+            email: response.user.email 
+          }
+        });
       },
       error: (error) => {
         this.isLoading = false;
