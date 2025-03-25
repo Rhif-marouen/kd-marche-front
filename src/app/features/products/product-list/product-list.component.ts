@@ -1,50 +1,104 @@
+// product-list.component.ts
 import { Component, signal } from '@angular/core';
 import { ProductService } from '../../../core/services/product.service';
 import { CommonModule } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatCardModule } from '@angular/material/card';
+import { TruncatePipe } from '../../../shared/pipes/truncate.pipe'; // Chemin corrigé
 import { PublicProduct, PaginatedResponse } from '../../../core/models/product.model';
-
+import { environment } from '../../../../environments/environment';
 
 @Component({
   standalone: true,
-  imports: [CommonModule, MatTableModule, MatPaginatorModule],
+  imports: [
+    CommonModule,
+    MatPaginatorModule,
+    MatCardModule,
+    TruncatePipe // Ajout du pipe dans les imports
+  ],
   template: `
-    <table mat-table [dataSource]="products()">
-      <!-- Colonne Nom -->
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>Nom</th>
-        <td mat-cell *matCellDef="let product">{{ product.name }}</td>
-      </ng-container>
+    <div class="product-grid">
+      <mat-card *ngFor="let product of products()" class="product-card">
+      <div class="image-container">
+    <img 
+      [src]="getImageUrl(product.image_url)" 
+      alt="{{ product.name }}"
+      (error)="handleImageError($event)"
+    >
+  </div>
+        <mat-card-header>
+          <mat-card-title>{{ product.name }}</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <p class="description">{{ product.description | truncate: 100 }}</p>
+          <div class="product-footer">
+            <span class="price">{{ product.price | currency:'EUR' }}</span>
+            <span class="quality" [ngClass]="'quality-' + (product.quality || '')">
+              Qualité {{ product.quality }}
+            </span>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
 
-      <!-- Colonne Description -->
-      <ng-container matColumnDef="description">
-        <th mat-header-cell *matHeaderCellDef>Description</th>
-        <td mat-cell *matCellDef="let product">{{ product.description }}</td>
-      </ng-container>
-
-      <!-- En-têtes et lignes -->
-      <tr mat-header-row *matHeaderRowDef="['name', 'description']"></tr>
-      <tr mat-row *matRowDef="let row; columns: ['name', 'description']"></tr>
-    </table>
-
-    <!-- Pagination -->
-    <mat-paginator [length]="totalItems()"
-                   [pageSize]="pageSize"
-                   [pageIndex]="currentPage() - 1"
-                   (page)="onPageChange($event)">
-    </mat-paginator>
+    <mat-paginator
+      [length]="totalItems()"
+      [pageSize]="pageSize"
+      [pageIndex]="currentPage() - 1"
+      (page)="onPageChange($event)"
+    ></mat-paginator>
   `,
   styles: [`
-    table {
-      width: 100%;
-      margin-top: 20px;
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 20px;
     }
-    mat-paginator {
-      margin-top: 20px;
+
+    .product-card {
+      transition: transform 0.3s ease;
     }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .product-image {
+      height: 200px;
+      object-fit: cover;
+    }
+
+    .description {
+      height: 60px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .product-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 15px;
+    }
+
+    .price {
+      font-weight: bold;
+      color: #2a9d8f;
+    }
+
+    .quality {
+      font-size: 0.8rem;
+      padding: 4px 8px;
+      border-radius: 12px;
+    }
+
+    .quality-a { background-color: #e9f5db; color: #2a9d8f; }
+    .quality-b { background-color: #fefae0; color: #d4a373; }
+    .quality-c { background-color: #f8edeb; color: #d62828; }
   `]
 })
+
 export class ProductListComponent {
   products = signal<PublicProduct[]>([]);
   totalItems = signal(0);
@@ -68,5 +122,16 @@ export class ProductListComponent {
   onPageChange(event: PageEvent): void {
     this.currentPage.set(event.pageIndex + 1);
     this.loadProducts();
+  }
+
+  getImageUrl(imagePath: string): string {
+    if (imagePath?.startsWith('http')) {
+      return imagePath;
+    }
+    return imagePath ? `${environment.apiUrl}/storage/${imagePath}` : 'assets/placeholder.jpg';
+  }
+
+  handleImageError(event: Event): void {
+    (event.target as HTMLImageElement).src = 'assets/images/placeholder.jpg';
   }
 }

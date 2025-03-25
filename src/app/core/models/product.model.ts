@@ -7,6 +7,7 @@ export interface BaseProduct {
   name: string;
   description: string;
   price: number;
+  quality: string;
   category_id: number;
   stock: number;
   image_url: string;
