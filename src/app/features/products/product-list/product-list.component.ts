@@ -55,6 +55,19 @@ import { environment } from '../../../../environments/environment';
       gap: 20px;
       padding: 20px;
     }
+    
+    img {
+        width: 100%;
+        height: 90%;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.3s ease;
+        
+        &:hover {
+          transform: scale(1.05); // Effet zoom léger au survol
+        }
+      }
+
 
     .product-card {
       transition: transform 0.3s ease;
@@ -66,6 +79,7 @@ import { environment } from '../../../../environments/environment';
 
     .product-image {
       height: 200px;
+      width: 100px;
       object-fit: cover;
     }
 
@@ -125,13 +139,18 @@ export class ProductListComponent {
   }
 
   getImageUrl(imagePath: string): string {
-    if (imagePath?.startsWith('http')) {
-      return imagePath;
-    }
-    return imagePath ? `${environment.apiUrl}/storage/${imagePath}` : 'assets/placeholder.jpg';
+    if (!imagePath) return '/assets/images/placeholder.jpg';
+    
+    // Retourner directement les URLs absolues (http/https)
+    if (imagePath.startsWith('http')) return imagePath;
+    
+    // Gérer les URLs relatives au backend
+    return `${environment.apiUrl}/storage/${imagePath}`;
   }
+    
+  
 
   handleImageError(event: Event): void {
-    (event.target as HTMLImageElement).src = 'assets/images/placeholder.jpg';
+    (event.target as HTMLImageElement).src = 'assets/images/placeholder-vide.png';
   }
 }

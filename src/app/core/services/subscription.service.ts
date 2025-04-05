@@ -9,10 +9,9 @@ export class SubscriptionService {
 
   createSubscription(paymentMethodId: string, userId: number) {
     return this.http.post(`${environment.apiUrl}/subscription/create`, {
-      paymentMethodId,
+      payment_method: paymentMethodId,
       userId,
-      amount: 9000, // 90€ en centimes
-      currency: 'eur'
+
     });
   }
 }

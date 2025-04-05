@@ -59,26 +59,29 @@
           },
           "defaultConfiguration": "production"
         },
-        "serve": {
-  
-          "builder": "@angular-devkit/build-angular:dev-server",
-          "configurations": {
-            "production": {
-              "buildTarget": "kd-marche-frontend:build:production",
+     "serve": {
+  "builder": "@angular-devkit/build-angular:dev-server",
+  "configurations": {
+    "production": {
+      "buildTarget": "kd-marche-frontend:build:production",
+      "headers": {
+        
+                 "Content-Security-Policy": "default-src 'self'; script-src 'self' https://js.stripe.com https://m.stripe.network 'unsafe-eval' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: http://localhost:8000 https://*.stripe.com https://via.placeholder.com; font-src 'self' https://fonts.gstatic.com; frame-src https://js.stripe.com; connect-src 'self' http://localhost:8000 https://api.stripe.com;"
+      }
+    },
+    "development": {
+      "buildTarget": "kd-marche-frontend:build:development",
+      "headers": {
+         
              
-              
-                "headers": {
-                  "Content-Security-Policy": "default-src 'self'; script-src 'self' https://js.stripe.com https://m.stripe.network 'unsafe-eval' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https://*.stripe.com https://fonts.gstatic.com; font-src 'self' https://fonts.gstatic.com; frame-src https://js.stripe.com https://m.stripe.network; worker-src blob: https://m.stripe.network; connect-src 'self' http://localhost:8000 https://api.stripe.com;"
-                }
-              
+  "Content-Security-Policy": "default-src 'self' http://localhost:*; script-src 'self' https://js.stripe.com 'unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: http://localhost:* https://*.stripe.com; font-src 'self' https://fonts.gstatic.com; frame-src 'self' https://js.stripe.com; connect-src 'self' http://localhost:8000 https://api.stripe.com;"
 
-            },
-            "development": {
-              "buildTarget": "kd-marche-frontend:build:development"
-            }
-          },
-          "defaultConfiguration": "development"
-        },
+
+      }
+    }
+  },
+  "defaultConfiguration": "development"
+},
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {

@@ -22,7 +22,7 @@ import { Router } from '@angular/router';
 export class CheckoutComponent implements OnInit {
   userEmail!: string;
   userId!: number;
-  private stripe!: Stripe;
+  private stripe: Stripe | null = null;
   private cardElement!: StripeCardElement;
   isLoading = false;
   errorMessage = '';
@@ -113,4 +113,6 @@ export class CheckoutComponent implements OnInit {
     }
     return error.message || 'Erreur lors du traitement du paiement';
   }
+
+  
 }

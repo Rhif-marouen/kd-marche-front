@@ -1,1 +1,56 @@
-@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .product-card {
+    transition: transform 0.3s ease;
+  }
+
+  .product-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .product-image {
+    height: 200px;
+    width: 100%;
+    object-fit: cover;
+  }
+
+  .description {
+    height: 60px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .img{
+    height: 100px;
+    width: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+
+  .product-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+  }
+
+  .price {
+    font-weight: bold;
+    color: #2a9d8f;
+  }
+
+  .quality {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    border-radius: 12px;
+  }
+
+  .quality-a { background-color: #e9f5db; color: #2a9d8f; }
+  .quality-b { background-color: #fefae0; color: #d4a373; }
+  .quality-c { background-color: #f8edeb; color: #d62828; }

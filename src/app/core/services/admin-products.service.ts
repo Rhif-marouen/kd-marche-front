@@ -21,16 +21,19 @@ export class AdminProductsService {
   }
 
   createProduct(formData: FormData): Observable<Product> {
-    return this.http.post<Product>(this.apiUrl, formData);
+    return this.http.post<Product>(`${this.apiUrl}`, formData, {
     
+    });
   }
   getProductById(id: number): Observable<Product> {
     return this.http.get<Product>(`${this.apiUrl}/${id}`);
   }
 
   updateProduct(id: number, formData: FormData): Observable<any> {
-    formData.append('_method', 'PUT'); // <-- Ajouter cette ligne
-    return this.http.post(`${this.apiUrl}/${id}`, formData);
+    formData.append('_method', 'PUT');
+    return this.http.post(`${this.apiUrl}/${id}`, formData, {
+
+    });
   }
 
   deleteProduct(id: number): Observable<void> {
@@ -45,4 +48,4 @@ export class AdminProductsService {
     return this.http.get<PaginatedResponse<Product>>('api/admin/products', { params });
   }
   
-}
+}  

@@ -1,1 +1,112 @@
-<p>product-form works!</p>
+<h2 mat-dialog-title>{{ data.product ? 'Modifier' : 'Créer' }} un produit</h2>
+
+<form [formGroup]="form" (ngSubmit)="submit()" enctype="multipart/form-data">
+  <mat-dialog-content>
+    <!-- Nom du produit -->
+    <mat-form-field appearance="outline">
+      <mat-label>Nom du produit</mat-label>
+      <input matInput formControlName="name" placeholder="Ex: Pack 10kg Farine">
+      <mat-error *ngIf="form.get('name')?.hasError('required')">
+        Champ obligatoire
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Prix -->
+    <mat-form-field appearance="outline">
+      <mat-label>Prix (€)</mat-label>
+      <input matInput type="number" formControlName="price" step="0.01">
+      <mat-error *ngIf="form.get('price')?.hasError('required')">
+        Champ obligatoire
+      </mat-error>
+      <mat-error *ngIf="form.get('price')?.hasError('min')">
+        Minimum 0.01€
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Catégorie -->
+    <mat-form-field appearance="outline">
+      <mat-label>Catégorie</mat-label>
+      <mat-select formControlName="category_id">
+        <mat-option *ngFor="let category of categories" [value]="category.id">
+          {{ category.name }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.get('category_id')?.invalid">
+        Sélection obligatoire
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Stock -->
+    <mat-form-field appearance="outline">
+      <mat-label>Stock</mat-label>
+      <input matInput type="number" formControlName="stock">
+      <mat-error *ngIf="form.get('stock')?.hasError('required')">
+        Champ obligatoire
+      </mat-error>
+      <mat-error *ngIf="form.get('stock')?.hasError('min')">
+        Minimum 0 unité
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Description -->
+    <mat-form-field appearance="outline">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" rows="3"></textarea>
+      <mat-error *ngIf="form.get('description')?.hasError('required')">
+        Description requise
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Qualité -->
+    <mat-form-field appearance="outline">
+      <mat-label>Qualité</mat-label>
+      <mat-select formControlName="quality">
+        <mat-option *ngFor="let q of quality" [value]="q">
+          Qualité {{ q }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="form.get('quality')?.invalid">
+        Sélection obligatoire
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Upload d'image -->
+    <div class="file-upload-section">
+      <input #fileInput 
+             type="file" 
+             (change)="onFileSelected($event)" 
+             hidden
+             accept="image/jpeg, image/png">
+      
+      <button mat-stroked-button 
+              type="button"
+              (click)="fileInput.click()"
+              color="primary">
+        <mat-icon>upload</mat-icon>
+        {{ selectedFile?.name || 'Choisir une image...' }}
+      </button>
+      
+      <div class="file-info">
+        <small *ngIf="selectedFile">
+          {{ selectedFile.size / 1024 | number:'1.0-0' }} Ko - 
+          {{ selectedFile.type.split('/')[1] | uppercase }}
+        </small>
+        <ng-container *ngIf="data.product as product">
+          <small *ngIf="!selectedFile && product.image_url">
+            Image actuelle : {{ product.image_url }}
+          </small>
+        </ng-container>
+      </div>
+    </div>
+  </mat-dialog-content> <!-- Fermeture ajoutée ici -->
+
+  <mat-dialog-actions [align]="'end'">
+    <button mat-button mat-dialog-close>Annuler</button>
+    <button mat-raised-button 
+            color="primary" 
+            type="submit"
+            [disabled]="form.invalid">
+      {{ data.product ? 'Mettre à jour' : 'Créer' }}
+    </button>
+  </mat-dialog-actions>
+</form>

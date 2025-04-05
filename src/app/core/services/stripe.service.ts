@@ -12,11 +12,11 @@ export class StripeService {
     });
   }
 
-  async getStripe(): Promise<Stripe> {
+  async getStripe(): Promise<Stripe | null> {
     const stripe = await this.stripePromise;
     if (!stripe) {
       throw new Error('Stripe n\'a pas pu être initialisé');
     }
-    return stripe;
+    return this.stripePromise;
   }
 }

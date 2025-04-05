@@ -1,1 +1,30 @@
-<p>product-list works!</p>
+<div class="product-grid">
+  <mat-card *ngFor="let product of products()" class="product-card">
+  <div class="image-container">
+<img 
+  [src]="getImageUrl(product.image_url)" 
+  alt="{{ product.name }}"
+  (error)="handleImageError($event)"
+>
+</div>
+    <mat-card-header>
+      <mat-card-title>{{ product.name }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <p class="description">{{ product.description | truncate: 100 }}</p>
+      <div class="product-footer">
+        <span class="price">{{ product.price | currency:'EUR' }}</span>
+        <span class="quality" [ngClass]="'quality-' + (product.quality || '')">
+          Qualité {{ product.quality }}
+        </span>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<mat-paginator
+  [length]="totalItems()"
+  [pageSize]="pageSize"
+  [pageIndex]="currentPage() - 1"
+  (page)="onPageChange($event)"
+></mat-paginator>
