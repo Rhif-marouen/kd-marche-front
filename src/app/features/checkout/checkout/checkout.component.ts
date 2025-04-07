@@ -7,7 +7,7 @@ import { StripeElements, Stripe, StripeCardElement } from '@stripe/stripe-js';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { Router } from '@angular/router';
-
+import { firstValueFrom } from 'rxjs';
 @Component({
   selector: 'app-checkout',
   standalone: true,
@@ -72,37 +72,47 @@ export class CheckoutComponent implements OnInit {
   async handleSubscription() {
     this.isLoading = true;
     this.errorMessage = '';
-
+  
     try {
       if (!this.stripe || !this.cardElement) {
         throw new Error('Configuration de paiement invalide');
       }
-
+  
+      // ← Ici, on crée le PaymentMethod et on récupère son ID
       const { error, paymentMethod } = await this.stripe.createPaymentMethod({
         type: 'card',
         card: this.cardElement
       });
-
-      if (error) throw error;
-      if (!paymentMethod?.id) throw new Error('Échec de la création du moyen de paiement');
-
-      await this.subscriptionService.createSubscription(paymentMethod.id, this.userId).toPromise();
-
+  
+      if (error) {
+        // Si erreur de Stripe Elements, on l’affiche
+        console.error(error);
+        throw error;
+      }
+  
+      console.log('ID du PaymentMethod:', paymentMethod.id);
+  
+      // ← On envoie l’ID du PaymentMethod à ton backend
+      await firstValueFrom(
+        this.subscriptionService.createSubscription(paymentMethod.id, this.userId)
+      );
+  
+      // Paiement réussi
       this.success = true;
       this.authService.updateUserSubscriptionStatus(true);
-      
-      // Redirection après 2 secondes
+  
       setTimeout(() => {
         this.router.navigate(['/profile']);
       }, 2000);
-
-    } catch (error: any) {
-      this.errorMessage = this.handleError(error);
-      console.error('Erreur de paiement:', error);
+  
+    } catch (err: any) {
+      this.errorMessage = this.handleError(err);
+      console.error('Erreur de paiement:', err);
     } finally {
       this.isLoading = false;
     }
   }
+  
 
   private handleError(error: any): string {
     if (error.code === 'card_declined') {

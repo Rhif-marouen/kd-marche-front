@@ -16,7 +16,7 @@ interface LoginResponse {
 export class AuthService {
   private readonly tokenKey = 'auth_token';
   private currentUser = signal<User | null>(null);
-  public user = this.currentUser.asReadonly();
+  public user = () => this.currentUser();
 
   constructor(
     private http: HttpClient,
@@ -148,4 +148,8 @@ register(userData: { name: string; email: string; password: string }): Observabl
       this.currentUser.set({ ...currentUser, is_active: isActive });
     }
   }
+  isAuthenticated(): boolean {
+    return !!this.user; // Adaptez à votre logique d'authentification
+  }
+
 }

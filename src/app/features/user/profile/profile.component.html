@@ -1,2 +1,27 @@
-<p>profile works!</p>
 
+
+<div class="profile-container">
+    <h2> {{ authService.user()?.name }} Bienvenue dans votre espace membre</h2>
+    <p>Email : {{ authService.user()?.email }}</p>
+    <hr>
+    <h2>Produits disponibles</h2>
+   <!-- profile.component.html -->
+<div class="products-grid">
+  <mat-card *ngFor="let product of products" class="product-card">
+    <img [src]="product.image_url" [alt]="product.name">
+    <mat-card-content>
+      <h3>{{ product.name }}</h3>
+      <p class="price">{{ product.price | currency:'EUR':'symbol':'1.2-2' }}</p>
+      <p class="category">Catégorie: {{ product.category }}</p>
+      <p class="stock">Stock: {{ product.stock }}</p>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<mat-paginator 
+  [length]="paginationMeta?.total"
+  [pageSize]="paginationMeta?.per_page"
+  [pageIndex]="paginationMeta?.current_page - 1"
+  (page)="onPageChange($event)"
+></mat-paginator>
+</div>
