@@ -1,0 +1,23 @@
+<!-- cart.component.html -->
+<div class="cart-container">
+    <h2>Votre panier</h2>
+    
+    <div *ngIf="cartItems().length === 0" class="empty-cart">
+      Votre panier est vide
+    </div>
+  
+    <div *ngFor="let item of cartItems()" class="cart-item">
+      <h3>{{ item.name }}</h3>
+      <p>Quantité: {{ item.quantity }}</p>
+      <p>Prix unitaire: {{ item.price | currency:'EUR':'symbol':'1.2-2' }}</p>
+      <p>Total: {{ item.price * item.quantity | currency:'EUR':'symbol':'1.2-2' }}</p>
+    </div>
+  
+    <button 
+      *ngIf="cartItems().length > 0" 
+      class="checkout-button"
+      (click)="proceedToCheckout()"
+    >
+      Passer la commande
+    </button>
+  </div>

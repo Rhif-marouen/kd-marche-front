@@ -54,3 +54,21 @@
   .quality-a { background-color: #e9f5db; color: #2a9d8f; }
   .quality-b { background-color: #fefae0; color: #d4a373; }
   .quality-c { background-color: #f8edeb; color: #d62828; }
+// Ajouter dans la section styles
+.broken-image {
+  filter: grayscale(100%);
+  opacity: 0.7;
+  position: relative;
+  
+  &::after {
+    content: "Image non disponible";
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    background: rgba(0,0,0,0.5);
+    color: white;
+    padding: 4px;
+    font-size: 0.8em;
+  }
+}

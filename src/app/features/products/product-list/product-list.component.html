@@ -1,11 +1,13 @@
 <div class="product-grid">
   <mat-card *ngFor="let product of products()" class="product-card">
   <div class="image-container">
-<img 
-  [src]="getImageUrl(product.image_url)" 
-  alt="{{ product.name }}"
-  (error)="handleImageError($event)"
->
+    <img 
+    [src]="getImageUrl(product.image_url)" 
+    [alt]="'Image de ' + product.name"
+    (error)="handleImageError($event)"
+    loading="lazy"
+    class="product-image"
+  >
 </div>
     <mat-card-header>
       <mat-card-title>{{ product.name }}</mat-card-title>

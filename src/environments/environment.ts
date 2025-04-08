@@ -6,5 +6,6 @@ export const environment = {
       defaultHeaders: {
       'Content-Type': 'application/json',
       'Accept': 'application/json'
-      }
+      },
+    storageUrl: 'http://localhost:8000/storage'  
     };

@@ -34,6 +34,16 @@ export class ProductService {
       }
     );
   }
+  getProductDetails(id: number): Observable<Product> {
+    return this.http.get<Product>(
+      `${environment.apiUrl}/products/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${this.authService.getToken()}`
+        }
+      }
+    );
+  }
 }
 
 /*

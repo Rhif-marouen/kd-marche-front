@@ -5,6 +5,8 @@ import { ProfileComponent } from './features/user/profile/profile.component';
 import { LoginComponent } from './features/auth/login.component';
 import { CheckoutComponent } from './features/checkout/checkout/checkout.component';
 import { paymentGuard } from './core/guards/payment.guard';
+import { ProductDetailComponent } from './features/products/product-detail/product-detail.component';
+import { CartComponent } from './features/user/carts/cart/cart.component';
 export const routes: Routes = [
   { 
     path: 'products', 
@@ -38,7 +40,16 @@ export const routes: Routes = [
     path: 'checkout',
     component: CheckoutComponent,
     canActivate: [paymentGuard] // Protection par guard
+  },
+  { 
+    path: 'product/:id', 
+    component: ProductDetailComponent 
+  },
+  { 
+    path: 'cart', 
+    component: CartComponent 
   }
+
 
   
 ];

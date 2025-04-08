@@ -1,0 +1,35 @@
+.product-detail {
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+  
+    .price {
+      font-size: 1.5rem;
+      color: #2ecc71;
+      margin: 1rem 0;
+    }
+  
+    .quantity-selector {
+      display: flex;
+      gap: 1rem;
+      margin: 2rem 0;
+      
+      button {
+        padding: 0.5rem 1rem;
+      }
+      
+      input {
+        width: 60px;
+        text-align: center;
+      }
+    }
+  
+    button[type="button"] {
+      background: #3498db;
+      color: white;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  }

@@ -138,19 +138,23 @@ export class ProductListComponent {
     this.loadProducts();
   }
 
-  getImageUrl(imagePath: string): string {
-    if (!imagePath) return '/assets/images/placeholder.jpg';
+  getImageUrl(imagePath: string | null): string {
+    if (!imagePath) return 'assets/images/placeholder.jpg';
     
-    // Retourner directement les URLs absolues (http/https)
-    if (imagePath.startsWith('http')) return imagePath;
+    if (imagePath.startsWith('http') || imagePath.startsWith('/')) {
+      return imagePath;
+    }
     
-    // Gérer les URLs relatives au backend
-    return `${environment.apiUrl}/storage/${imagePath}`;
+    return `${environment.storageUrl}/${imagePath}`;
   }
     
   
 
   handleImageError(event: Event): void {
-    (event.target as HTMLImageElement).src = 'assets/images/placeholder-vide.png';
+    const img = event.target as HTMLImageElement;
+    if (!img.src.includes('placeholder')) {
+      img.src = 'assets/images/error-placeholder.png';
+      img.classList.add('broken-image');
+    }
   }
 }

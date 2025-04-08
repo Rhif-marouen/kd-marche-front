@@ -1,1 +1,28 @@
-<p>product-detail works!</p>
+<!-- product-detail.component.html -->
+<div class="product-container">
+    <button routerLink="/profile">Retour</button>
+    
+    <div class="product-detail">
+      <img [src]="product.image_url || 'assets/images/placeholder-image.jpg'" (error)="handleImageError($event)">
+
+      
+      <div class="product-info">
+        <h1>{{ product.name }}</h1>
+        <p class="price">{{ product.price | currency:'EUR':'symbol':'1.2-2' }}</p>
+        <p class="category">Catégorie: {{ product.category }}</p>
+        <p class="stock">Stock: {{ product.stock }}</p>
+        <p class="quality">qualité: {{ product.quality }}</p>
+        <p class="description">Desc: {{ product.description }}</p>
+        <p class="created_at">créer le : {{ product.created_at }}</p>
+        <div class="quantity-selector">
+            <button (click)="decrementQuantity()">-</button>
+          <input type="number" [(ngModel)]="quantity" min="1" name="quantity" />
+          <button (click)="incrementQuantity()">+</button>
+        </div>
+  
+        <button class="add-to-cart" (click)="addToCart()">
+          Ajouter au panier
+        </button>
+      </div>
+    </div>
+  </div>

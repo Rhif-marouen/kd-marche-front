@@ -9,7 +9,7 @@ import { ProductService } from '../../../core/services/product.service';
 import { firstValueFrom } from 'rxjs';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-
+import { RouterModule } from '@angular/router';
 @Component({
   selector: 'app-profile',
   standalone: true,
@@ -18,7 +18,8 @@ import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
     MatButtonModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    MatPaginatorModule ],
+    MatPaginatorModule,
+    RouterModule],
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
 
