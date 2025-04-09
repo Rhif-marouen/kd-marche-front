@@ -35,6 +35,7 @@ export class ProductDetailComponent implements OnInit {
   }
 
   addToCart(): void {
+    console.log('addToCart called with', this.product, 'quantity:', this.quantity);
     this.cartService.addItem({
       ...this.product,
       quantity: this.quantity

@@ -1,23 +1,39 @@
-<!-- cart.component.html -->
 <div class="cart-container">
-    <h2>Votre panier</h2>
-    
-    <div *ngIf="cartItems().length === 0" class="empty-cart">
-      Votre panier est vide
+  <h2>🛒 Votre panier</h2>
+
+  <div *ngIf="cartItems.length === 0" class="empty-cart">
+    Votre panier est vide.
+  </div>
+
+  <div class="cart-grid" *ngIf="cartItems.length > 0">
+    <div class="cart-item" *ngFor="let item of cartItems">
+      <img [src]="item.image_url || 'assets/images/placeholder.jpg'" alt="{{ item.name }}" />
+      
+      <div class="details">
+        <h3>{{ item.name }}</h3>
+        <p>Prix unitaire : {{ item.price | currency:'EUR' }}</p>
+        <p>Total : {{ item.price * item.quantity | currency:'EUR' }}</p>
+
+        <div class="quantity-control">
+          <label>
+            Quantité :
+            <input 
+              type="number" 
+              [(ngModel)]="item.quantity" 
+              min="1" 
+              [max]="item.stock ?? 99" 
+              (change)="updateQuantity(item)" />
+          </label>
+        </div>
+
+        <button class="remove-btn" (click)="removeItem(item.id)">🗑 Supprimer</button>
+      </div>
     </div>
-  
-    <div *ngFor="let item of cartItems()" class="cart-item">
-      <h3>{{ item.name }}</h3>
-      <p>Quantité: {{ item.quantity }}</p>
-      <p>Prix unitaire: {{ item.price | currency:'EUR':'symbol':'1.2-2' }}</p>
-      <p>Total: {{ item.price * item.quantity | currency:'EUR':'symbol':'1.2-2' }}</p>
-    </div>
-  
-    <button 
-      *ngIf="cartItems().length > 0" 
-      class="checkout-button"
-      (click)="proceedToCheckout()"
-    >
-      Passer la commande
+  </div>
+
+  <div class="checkout-container" *ngIf="cartItems.length > 0">
+    <button class="checkout-button" (click)="proceedToCheckout()">
+      ✅ Passer la commande
     </button>
   </div>
+</div>

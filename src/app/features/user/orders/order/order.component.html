@@ -1,1 +1,35 @@
-<p>order works!</p>
+<div class="order-container">
+    <h2>Mes commandes</h2>
+  
+    <div *ngIf="loading">
+      <p>Chargement des commandes...</p>
+    </div>
+  
+    <div *ngIf="error">
+      <p class="error">{{ error }}</p>
+    </div>
+  
+    <div *ngIf="orders$ | async as orders">
+      <div *ngIf="orders.length === 0">
+        <p>Aucune commande trouvée.</p>
+      </div>
+      <div *ngFor="let order of orders" class="order-item">
+        <h3>Commande #{{ order.id }}</h3>
+        <p>Date : {{ order.created_at | date:'medium' }}</p>
+        <p>Total : {{ order.total | currency:'EUR':'symbol':'1.2-2' }}</p>
+        <p>Statut : {{ order.status }}</p>
+        <div class="order-items" *ngIf="order.items && order.items.length > 0">
+          <p>Articles :</p>
+          <ul>
+            <li *ngFor="let item of order.items">
+              Produit ID: {{ item.product_id }} -
+              Quantité: {{ item.quantity }} -
+              Prix: {{ item.price | currency:'EUR':'symbol':'1.2-2' }}
+            </li>
+          </ul>
+        </div>
+        <!-- Vous pouvez ajouter d'autres informations ou un bouton pour consulter le détail -->
+      </div>
+    </div>
+  </div>
+  

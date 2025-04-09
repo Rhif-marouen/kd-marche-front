@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { CartService } from '../../../core/services/cart.service';
 
 @Component({
   standalone: true,
@@ -32,14 +33,19 @@ import { MatToolbarModule } from '@angular/material/toolbar';
           </a>
         </ng-container>
       </div>
-
-      <div class="auth-section">
+      
+      <div class="auth-section" >
         <ng-container *ngIf="authService.isLoggedIn(); else notLoggedIn">
           <button mat-raised-button color="warn" (click)="logout()">
             <mat-icon>logout</mat-icon>
             Déconnexion
           </button>
         </ng-container>
+        <button mat-button routerLink="/cart">
+  <mat-icon>shopping_cart</mat-icon>
+  Panier <span *ngIf="cartCount > 0">({{ cartCount }})</span>
+</button>
+
 
         <ng-template #notLoggedIn>
           <a mat-button routerLink="/auth/login">Connexion</a>
@@ -75,6 +81,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 export class HeaderComponent {
   authService = inject(AuthService);
   router = inject(Router);
+  cartService = inject(CartService);
+  cartCount = this.cartService.getCartItems().length;
 
   logout() {
     this.authService.logout().subscribe({
