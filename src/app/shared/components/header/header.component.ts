@@ -23,7 +23,7 @@ import { CartService } from '../../../core/services/cart.service';
       <span>KD-Marché</span>
       
       <div class="nav-links">
-        <a mat-button routerLink="/products">Produits</a>
+        <a mat-button routerLink="/products">Accueil</a>
         
         <ng-container *ngIf="authService.isLoggedIn()">
           <a *ngIf="!authService.isAdmin()" mat-button routerLink="/profile">Profil</a>

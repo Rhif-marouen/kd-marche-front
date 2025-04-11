@@ -7,6 +7,7 @@ import { CheckoutComponent } from './features/checkout/checkout/checkout.compone
 import { paymentGuard } from './core/guards/payment.guard';
 import { ProductDetailComponent } from './features/products/product-detail/product-detail.component';
 import { CartComponent } from './features/user/carts/cart/cart.component';
+import { CheckoutOrderComponent } from './features/checkout/checkout-order/checkout-order.component';
 export const routes: Routes = [
   { 
     path: 'products', 
@@ -48,7 +49,11 @@ export const routes: Routes = [
   { 
     path: 'cart', 
     component: CartComponent 
-  }
+  },
+  { 
+    path: 'checkout-order', 
+    component: CheckoutOrderComponent 
+  },
 
 
   

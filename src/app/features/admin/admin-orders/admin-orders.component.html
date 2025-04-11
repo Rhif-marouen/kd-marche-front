@@ -1,0 +1,11 @@
+<p>admin-orders works!</p>
+<div class="orders-list">
+    <div *ngFor="let order of orders" class="order-card">
+      <h3>Commande #{{order.id}}</h3>
+      <p>Client: {{order.user.name}} ({{order.user.email}})</p>
+      <p>Total: {{order.total | currency:'EUR'}}</p>
+      <div *ngFor="let item of order.items" class="order-item">
+        {{item.product.name}} x{{item.quantity}}
+      </div>
+    </div>
+  </div>

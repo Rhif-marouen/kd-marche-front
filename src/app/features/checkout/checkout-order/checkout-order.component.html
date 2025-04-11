@@ -1,0 +1,16 @@
+<div class="checkout-container">
+    <h2>Paiement de la commande</h2>
+    <div class="total">Total: {{ cartService.getTotal() | currency:'EUR' }}</div>
+    
+    <div id="card-element-order" class="stripe-card"></div>
+    
+    <button 
+      (click)="handlePayment()"
+      [disabled]="isLoading || cartService.getCartItems().length === 0">
+      {{ isLoading ? 'Traitement...' : 'Payer maintenant' }}
+    </button>
+    
+    <div *ngIf="errorMessage" class="error-message">
+      {{ errorMessage }}
+    </div>
+  </div>

@@ -8,6 +8,7 @@ import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
+import { StripeService } from './core/services/stripe.service';
 
 
 export const appConfig: ApplicationConfig = {
@@ -16,7 +17,8 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([authInterceptor])),
     provideAnimations(),
     provideNativeDateAdapter(),
-    importProvidersFrom(MatDialogModule,OverlayModule, CommonModule )
+    importProvidersFrom(MatDialogModule,OverlayModule, CommonModule ),
+    StripeService, 
     
   ]
 };

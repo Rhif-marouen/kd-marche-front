@@ -54,4 +54,12 @@ export class OrderService {
       }
     });
   }
+
+  createOrder(orderData: any) {
+    return this.http.post(`${environment.apiUrl}/orders`, orderData);
+  }
+  
+  getAdminOrders() {
+    return this.http.get(`${environment.apiUrl}/admin/orders`);
+  }
 }
