@@ -1,11 +1,71 @@
-<p>admin-orders works!</p>
-<div class="orders-list">
-    <div *ngFor="let order of orders" class="order-card">
-      <h3>Commande #{{order.id}}</h3>
-      <p>Client: {{order.user.name}} ({{order.user.email}})</p>
-      <p>Total: {{order.total | currency:'EUR'}}</p>
-      <div *ngFor="let item of order.items" class="order-item">
-        {{item.product.name}} x{{item.quantity}}
-      </div>
+<div class="container mt-4">
+  <h2 class="mb-4">Gestion des Commandes</h2>
+  
+  <div *ngIf="isLoading" class="text-center">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Chargement...</span>
     </div>
   </div>
+
+  <div *ngIf="!isLoading">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>N°</th>
+            <th>Client</th>
+            <th>Total</th>
+            <th>Statut</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let order of orders" 
+              [ngClass]="{
+                'table-success': order.delivery_status === 'delivered',
+                'table-secondary': order.delivery_status === 'canceled',
+                'table-warning': order.is_overdue
+              }">
+            <td>{{ order.id }}</td>
+            <td>{{ order.user.name || 'Non renseigné'}}</td>
+            <td>{{ order.total | currency:'EUR' }}</td>
+            <td>
+              <span class="badge rounded-pill" 
+                    [ngClass]="{
+                      'bg-success': order.delivery_status === 'delivered',
+                      'bg-secondary': order.delivery_status === 'canceled',
+                      'bg-warning': order.is_overdue,
+                      'bg-primary': order.delivery_status === 'pending' && !order.is_overdue
+                    }">
+                {{ order.is_overdue ? 'EN RETARD' : (order.delivery_status | uppercase) }}
+              </span>
+            </td>
+            <td>{{ order.created_at | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td>
+              <div class="d-flex gap-2">
+                
+                <button *ngIf="order.delivery_status !== 'delivered' && order.delivery_status !== 'canceled'"
+                        (click)="updateStatus(order.id, 'delivered')"
+                        class="btn btn-sm btn-success">
+                  <i class="bi bi-truck"></i> Livrer
+                </button>
+
+                <button *ngIf="order.delivery_status !== 'canceled'"
+                        (click)="updateStatus(order.id, 'canceled')"
+                        class="btn btn-sm btn-danger">
+                  <i class="bi bi-x-circle"></i> Annuler
+                </button>
+
+                <button (click)="sendEmail(order)"
+                        class="btn btn-sm btn-info text-white">
+                  <i class="bi bi-envelope"></i> Contacter
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

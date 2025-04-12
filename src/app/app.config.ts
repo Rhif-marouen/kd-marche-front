@@ -9,6 +9,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
 import { StripeService } from './core/services/stripe.service';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 
 export const appConfig: ApplicationConfig = {
@@ -19,6 +20,6 @@ export const appConfig: ApplicationConfig = {
     provideNativeDateAdapter(),
     importProvidersFrom(MatDialogModule,OverlayModule, CommonModule ),
     StripeService, 
-    
+    MatSnackBarModule
   ]
 };

@@ -68,6 +68,11 @@ import { RouterModule } from '@angular/router';
     <mat-icon>people</mat-icon>
     Gérer les utilisateurs
   </button>
+
+  <button routerLink="/admin/orders">
+    <mat-icon>assignment</mat-icon>
+    Gérer les commandes
+  </button>
 </div>
   `
 })
