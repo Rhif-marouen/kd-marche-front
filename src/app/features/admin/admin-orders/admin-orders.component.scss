@@ -4,15 +4,34 @@
 
 .badge.bg-warning {
   animation: pulse 1.5s infinite;
+  color: red;
+  font-weight: bold;
 }
 
 @keyframes pulse {
   0% { opacity: 1; }
-  50% { opacity: 0.5; }
+  50% { opacity: 0.4; }
   100% { opacity: 1; }
 }
 
 .btn-sm {
   padding: 0.25rem 0.5rem;
   font-size: 0.875rem;
+}
+.table-delivered {
+  background-color: #9ff3a6 !important; // Vert très clair
+  border-left: 4px solid #2e7d32; // Bordure verte à gauche
+  
+  &:hover {
+    background-color: #d4edda !important;
+  }
+}
+
+.table-canceled {
+  background-color: #f8f9fa !important; // Gris léger
+  opacity: 0.6;
+}
+
+.table-canceled:hover {
+  background-color: #f8d7da !important; // Rouge clair
 }

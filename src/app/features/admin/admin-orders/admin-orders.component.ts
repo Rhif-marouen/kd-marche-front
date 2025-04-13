@@ -3,11 +3,12 @@ import { Order, OrderService } from '../../../core/services/order.service';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-admin-orders',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule,MatButtonModule],
   templateUrl: './admin-orders.component.html',
   styleUrl: './admin-orders.component.scss'
 })

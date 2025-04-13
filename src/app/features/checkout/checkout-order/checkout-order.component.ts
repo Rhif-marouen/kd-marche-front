@@ -34,22 +34,30 @@ export class CheckoutOrderComponent implements OnInit {
 
   async handlePayment() {
     this.isLoading = true;
-    
+    const orderData = this.orderService.getTempOrderData();
+  
+    if (!orderData) {
+      this.router.navigate(['/checkout-form']);
+      return;
+    }
+  
     try {
       const { paymentMethod, error } = await this.stripe.createPaymentMethod({
         type: 'card',
         card: this.cardElement
       });
-
+  
       if (error) throw error;
-
-      await firstValueFrom(
+  
+      const response = await firstValueFrom(
         this.orderService.createOrder({
-          items: this.cartService.getCartItems(),
-          paymentMethodId: paymentMethod.id
+          ...orderData,
+          paymentMethodId: paymentMethod.id,
+          items: this.cartService.getCartItems()
         })
       );
-
+      this.orderService.setLastOrder(response); 
+  
       this.cartService.clearCart();
       this.router.navigate(['/order-confirmation']);
       

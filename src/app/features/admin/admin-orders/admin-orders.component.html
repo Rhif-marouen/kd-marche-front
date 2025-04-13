@@ -23,8 +23,8 @@
         <tbody>
           <tr *ngFor="let order of orders" 
               [ngClass]="{
-                'table-success': order.delivery_status === 'delivered',
-                'table-secondary': order.delivery_status === 'canceled',
+                'table-delivered': order.delivery_status === 'delivered',
+                'table-canceled': order.delivery_status === 'canceled',
                 'table-warning': order.is_overdue
               }">
             <td>{{ order.id }}</td>

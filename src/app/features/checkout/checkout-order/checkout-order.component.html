@@ -9,7 +9,8 @@
       [disabled]="isLoading || cartService.getCartItems().length === 0">
       {{ isLoading ? 'Traitement...' : 'Payer maintenant' }}
     </button>
-    
+
+ 
     <div *ngIf="errorMessage" class="error-message">
       {{ errorMessage }}
     </div>

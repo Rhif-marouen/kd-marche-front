@@ -35,7 +35,7 @@ export class CartComponent implements OnInit {
 
   proceedToCheckout(): void {
     if (this.cartService.getCartItems().length > 0) {
-      this.router.navigate(['/checkout-order']);
+      this.router.navigate(['/checkout-form']); // Redirection vers le formulaire
     } else {
       alert('Votre panier est vide !');
     }

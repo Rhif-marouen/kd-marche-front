@@ -9,6 +9,7 @@ import { ProductDetailComponent } from './features/products/product-detail/produ
 import { CartComponent } from './features/user/carts/cart/cart.component';
 import { CheckoutOrderComponent } from './features/checkout/checkout-order/checkout-order.component';
 import { AdminOrdersComponent } from './features/admin/admin-orders/admin-orders.component';
+import { CheckoutFormComponent } from './features/checkout/checkout-form/checkout-form.component';
 export const routes: Routes = [
   { 
     path: 'products', 
@@ -50,6 +51,10 @@ export const routes: Routes = [
   { 
     path: 'cart', 
     component: CartComponent 
+  },
+  { 
+    path: 'checkout-form',
+    component: CheckoutFormComponent 
   },
   { 
     path: 'checkout-order', 

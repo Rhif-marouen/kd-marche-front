@@ -1,0 +1,35 @@
+<div class="confirmation-container">
+    <div *ngIf="loading" class="loading">Chargement...</div>
+  
+    <div *ngIf="!loading && orderDetails" class="confirmation-card">
+      <div class="header">
+        <h1>✅ Paiement Réussi</h1>
+        <p>Merci pour votre commande !</p>
+      </div>
+  
+      <div class="order-summary">
+        <h2>Récapitulatif de commande</h2>
+        <p>Numéro de commande: <strong>#{{ orderDetails.id }}</strong></p>
+        <p>Montant total: <strong>{{ orderDetails.total | currency:'EUR' }}</strong></p>
+      </div>
+  
+      <div class="details-section">
+        <h3>Détails de livraison</h3>
+        <p>{{ orderDetails.address.street }}</p>
+        <p>{{ orderDetails.address.postal_code }} {{ orderDetails.address.city }}</p>
+        <p>{{ orderDetails.address.country }}</p>
+      </div>
+  
+      <div class="actions">
+        <button routerLink="/" class="home-button">Retour à l'accueil</button>
+        <button (click)="downloadInvoice()" class="invoice-button">
+          Télécharger la facture
+        </button>
+      </div>
+    </div>
+  
+    <div *ngIf="!loading && !orderDetails" class="error">
+      <h2>Commande non trouvée</h2>
+      <p>Veuillez contacter notre support.</p>
+    </div>
+  </div>

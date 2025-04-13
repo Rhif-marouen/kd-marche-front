@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { AuthService } from './auth.service';
-import { Observable, map } from 'rxjs';
+import { BehaviorSubject, Observable, map } from 'rxjs';
 
 // Définition des interfaces
 export interface OrderItem {
@@ -54,7 +54,8 @@ interface PaginatedApiResponse {
 })
 export class OrderService {
   private apiUrl = `${environment.apiUrl}/admin/orders`;
-
+  private tempOrderData: any;
+  private lastOrder = new BehaviorSubject<any>(null);
   constructor(
     private http: HttpClient,
     private authService: AuthService
@@ -119,4 +120,28 @@ export class OrderService {
       }
     );
   }
+  setTempOrderData(data: any): void {
+    this.tempOrderData = data;
+  }
+  
+  getTempOrderData(): any {
+    return this.tempOrderData;
+  }
+  setLastOrder(order: any) {
+    this.lastOrder.next(order);
+  }
+  
+  getLastOrder() {
+    return this.lastOrder.value;
+  }
+  
+  getOrderFromApi() {
+    return this.http.get(`${this.apiUrl}/orders/${this.lastOrder.value.id}`);
+  }
+  
+  downloadInvoice() {
+    return this.http.get(`${this.apiUrl}/orders/${this.lastOrder.value.id}/invoice`, 
+      { responseType: 'blob' });
+  }
+
 }

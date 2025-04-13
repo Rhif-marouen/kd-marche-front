@@ -1,0 +1,42 @@
+<form class="checkout-form" [formGroup]="checkoutForm" (ngSubmit)="onSubmit()">
+  <div class="mb-3">
+    <label>Téléphone</label>
+    <input type="tel" formControlName="phone" class="form-control">
+    <div *ngIf="checkoutForm.get('phone')?.errors" class="text-danger">
+      <small *ngIf="checkoutForm.get('phone')?.errors?.['required']">Requis</small>
+      <small *ngIf="checkoutForm.get('phone')?.errors?.['pattern']">Format: 0612345678 ou +33612345678</small>
+    </div>
+  </div>
+
+  <div formGroupName="address">
+    <div class="mb-3">
+      <label>Adresse</label>
+      <input type="text" formControlName="street" class="form-control" placeholder="N° et nom de rue">
+      <small *ngIf="checkoutForm.get('address.street')?.errors?.['required']" class="text-danger">Champ requis</small>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-4 mb-3">
+        <input type="text" formControlName="city" class="form-control" placeholder="Ville">
+        <small *ngIf="checkoutForm.get('address.city')?.errors?.['required']" class="text-danger">Ville requise</small>
+      </div>
+      
+      <div class="col-md-4 mb-3">
+        <input type="text" formControlName="postal_code" class="form-control" placeholder="Code postal">
+        <div *ngIf="checkoutForm.get('address.postal_code')?.errors" class="text-danger">
+          <small *ngIf="checkoutForm.get('address.postal_code')?.errors?.['required']">Requis</small>
+          <small *ngIf="checkoutForm.get('address.postal_code')?.errors?.['pattern']">5 chiffres requis</small>
+        </div>
+      </div>
+      
+      <div class="col-md-4 mb-3">
+        <input type="text" formControlName="country" class="form-control" placeholder="Pays">
+        <small *ngIf="checkoutForm.get('address.country')?.errors?.['required']" class="text-danger">Pays requis</small>
+      </div>
+    </div>
+  </div>
+
+  <button type="submit" class="btn btn-primary" [disabled]="!checkoutForm.valid">
+    Confirmer et passer au paiement
+  </button>
+</form>
