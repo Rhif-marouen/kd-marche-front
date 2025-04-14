@@ -20,7 +20,7 @@ export class AdminOrdersComponent implements OnInit {
   selectedOrder: Order | null = null;
   errorMessage: string | null = null;
   itemsPerPage: number = 10;
-  isUpdating: boolean = false;
+  updatingOrders: { [key: number]: boolean } = {};
   currentPage: number = 1;
   totalPages: number = 1;
   constructor(private orderService: OrderService) {}
@@ -45,24 +45,38 @@ export class AdminOrdersComponent implements OnInit {
       }
     });
   }
-  updateStatus(orderId: number, newStatus: string) {
-    this.isUpdating = true;
-    if (newStatus === 'delivered') {
-      if (confirm('Marquer comme livrée et envoyer un email de confirmation ?')) {
-        this.orderService.updateDeliveryStatus(orderId, newStatus).subscribe({
-          next: () => {
-            this.loadOrders();
-            alert('Statut mis à jour et email envoyé !');
-          },
-          error: (err) => alert('Erreur: ' + err.message)
-        });
-      }
-    } else {
-      // Logique existante pour les autres statuts
+  updateStatus(orderId: number, newStatus: 'delivered' | 'canceled') {
+    // Configuration des messages de confirmation
+    const confirmationMessages = {
+      delivered: 'Marquer comme livrée et envoyer un email de confirmation ?',
+      canceled: 'Confirmer l\'annulation définitive de cette commande ?'
+    };
+  
+    if (!confirm(confirmationMessages[newStatus])) {
+      this.updatingOrders[orderId] = false;
+      return;
     }
-   
+  
+    this.updatingOrders[orderId] = true;
+  
+    this.orderService.updateDeliveryStatus(orderId, newStatus).subscribe({
+      next: () => {
+        this.loadOrders(); // Recharge les données actualisées
+        this.updatingOrders[orderId] = false;
+        
+        const successMessages = {
+          delivered: 'Statut mis à jour et email envoyé !',
+          canceled: 'Commande annulée avec succès'
+        };
+        alert(successMessages[newStatus]);
+      },
+      error: (err) => {
+        this.updatingOrders[orderId] = false;
+        alert(`Erreur: ${err.error?.message || err.message}`);
+        console.error('Détails de l\'erreur:', err);
+      }
+    });
   }
-
   getAddressPreview(address: any): string {
     if (!address) return 'Adresse non spécifiée';
     

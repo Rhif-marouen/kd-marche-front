@@ -171,13 +171,18 @@ export class OrderService {
     };
   }
 
-  updateDeliveryStatus(orderId: number, status: string): Observable<Order> {
-    return this.http.put<Order>(
-      `${this.apiUrl}/${orderId}/delivery-status`,
-      { delivery_status: status }
-    );
-  }
-
+// order.service.ts
+updateDeliveryStatus(orderId: number, status: string): Observable<Order> {
+  return this.http.put<Order>(
+    `${this.apiUrl}/${orderId}/delivery-status`,
+    { delivery_status: status }, // Le nom doit correspondre exactement à ce qu'attend l'API
+    {
+      headers: {
+        Authorization: `Bearer ${this.authService.getToken()}`
+      }
+    }
+  );
+}
   private checkOverdue(createdAt: Date, deliveryStatus: string): boolean {
     const hoursDiff = (Date.now() - createdAt.getTime()) / 1000 / 60 / 60;
     return hoursDiff > 72 && deliveryStatus === 'pending';

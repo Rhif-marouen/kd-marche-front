@@ -56,15 +56,23 @@
             <td>
               <div class="d-flex gap-2">
                 
-                <button [disabled]="isUpdating">
-                  <span *ngIf="isUpdating" class="spinner-border spinner-border-sm"></span>
-                  Livrer
-                </button>
+                <button *ngIf="order.delivery_status !== 'delivered' && order.delivery_status !== 'canceled'"
+                (click)="updateStatus(order.id, 'delivered')"
+                [disabled]="order.delivery_status === 'delivered' || updatingOrders[order.id]"
+                class="btn btn-sm btn-success">
+          <span *ngIf="updatingOrders[order.id]" 
+                class="spinner-border spinner-border-sm me-2"></span>
+          {{ order.delivery_status === 'delivered' ? 'Livrée ✓' : 'Livrer' }}
+        </button>
 
-                <button [disabled]="isUpdating">
-                  <span *ngIf="isUpdating" class="spinner-border spinner-border-sm"></span>
-                  Annuler
-                </button>
+              <button *ngIf="order.delivery_status !== 'canceled'"
+              (click)="updateStatus(order.id, 'canceled')"
+              [disabled]="updatingOrders[order.id]"
+              class="btn btn-sm btn-outline-danger">
+        <span *ngIf="updatingOrders[order.id]" 
+              class="spinner-border spinner-border-sm"></span>
+        Annuler
+      </button>
               </div>
             </td>
           </tr>

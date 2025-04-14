@@ -28,8 +28,15 @@
 }
 
 .table-canceled {
-  background-color: #f8f9fa !important; // Gris léger
-  opacity: 0.6;
+  background-color: #f8f9fa !important; /* Gris clair */
+  color: #6c757d; /* Texte gris */
+  td {
+    opacity: 0.7;
+  }
+  
+  .btn:not(.btn-danger) {
+    display: none; /* Masque les boutons inutiles */
+  }
 }
 
 .table-canceled:hover {
@@ -52,4 +59,17 @@
     left: 0;
     box-shadow: 2px 2px 5px rgb(243, 3, 3);
   }
+}
+
+.btn-outline-danger {
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background-color: #dc3545;
+    color: white !important;
+  }
+}
+
+.spinner-border-sm.me-2 {
+  margin-right: 0.3rem;
 }
