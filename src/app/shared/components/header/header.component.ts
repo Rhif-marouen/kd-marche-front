@@ -20,7 +20,16 @@ import { CartService } from '../../../core/services/cart.service';
   selector: 'app-header',
   template: `
     <mat-toolbar color="primary">
-      <span>KD-Marché</span>
+    <div class="logo-container">
+    <img 
+      src="/assets/images/logo.png" 
+      alt="KD Marché Logo" 
+      class="logo"
+      routerLink="/"
+    >
+    <span>KD-Marché</span>
+  </div>
+      
       
       <div class="nav-links">
         <a mat-button routerLink="/products">Accueil</a>
@@ -76,6 +85,38 @@ import { CartService } from '../../../core/services/cart.service';
     mat-icon {
       margin-right: 0.5rem;
     }
+    .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+
+    .logo {
+      height: 60px;
+      width: auto;
+      background-color: white;
+      border-radius: 50%;
+    }
+
+    span {
+      font-size: 1.5rem;
+      font-weight: 500;
+    }
+  }
+  @media (max-width: 768px) {
+  .logo-container span {
+    display: none;
+  }
+  
+  .logo {
+    height: 60px !important;
+  }
+}
+
+  /* Déplacer la marge gauche sur le conteneur des liens */
+  .nav-links {
+    margin-left: 3rem;
+  }
   `]
 })
 export class HeaderComponent {

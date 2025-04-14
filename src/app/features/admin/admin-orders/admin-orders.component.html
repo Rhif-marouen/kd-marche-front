@@ -15,8 +15,11 @@
             <th>N°</th>
             <th>Client</th>
             <th>Total</th>
-            <th>Statut</th>
-            <th>Date</th>
+            <th>Date paiment</th>
+            <th>Statut Livrison</th>
+            <th>Date Livrison</th>
+            <th>Adresse client</th>
+            <th>Telephone</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -30,6 +33,7 @@
             <td>{{ order.id }}</td>
             <td>{{ order.user.name || 'Non renseigné'}}</td>
             <td>{{ order.total | currency:'EUR' }}</td>
+            <td>{{ order.created_at | date:'dd/MM/yyyy HH:mm' }}</td>
             <td>
               <span class="badge rounded-pill" 
                     [ngClass]="{
@@ -43,23 +47,23 @@
             </td>
             <td>{{ order.created_at | date:'dd/MM/yyyy HH:mm' }}</td>
             <td>
+              <span class="address-preview" [title]="getFullAddress(order.address)">
+                {{ getAddressPreview(order.address) }}
+                <i *ngIf="!order.address" class="bi bi-exclamation-circle text-danger"></i>
+              </span>
+            </td>
+            <td>{{ order.phone || 'indisponible' }}</td>
+            <td>
               <div class="d-flex gap-2">
                 
-                <button *ngIf="order.delivery_status !== 'delivered' && order.delivery_status !== 'canceled'"
-                        (click)="updateStatus(order.id, 'delivered')"
-                        class="btn btn-sm btn-success">
-                  <i class="bi bi-truck"></i> Livrer
+                <button [disabled]="isUpdating">
+                  <span *ngIf="isUpdating" class="spinner-border spinner-border-sm"></span>
+                  Livrer
                 </button>
 
-                <button *ngIf="order.delivery_status !== 'canceled'"
-                        (click)="updateStatus(order.id, 'canceled')"
-                        class="btn btn-sm btn-danger">
-                  <i class="bi bi-x-circle"></i> Annuler
-                </button>
-
-                <button (click)="sendEmail(order)"
-                        class="btn btn-sm btn-info text-white">
-                  <i class="bi bi-envelope"></i> Contacter
+                <button [disabled]="isUpdating">
+                  <span *ngIf="isUpdating" class="spinner-border spinner-border-sm"></span>
+                  Annuler
                 </button>
               </div>
             </td>
@@ -67,5 +71,24 @@
         </tbody>
       </table>
     </div>
+    <!-- Pagination -->
+<div *ngIf="totalPages > 1" class="d-flex justify-content-between align-items-center mt-3">
+  <button 
+    class="btn btn-sm btn-secondary"
+    [disabled]="currentPage === 1"
+    (click)="loadOrders(currentPage - 1)">
+    <i class="bi bi-chevron-left"></i> Précédent
+  </button>
+
+  <span>Page {{ currentPage }} / {{ totalPages }}</span>
+
+  <button 
+    class="btn btn-sm btn-secondary"
+    [disabled]="currentPage === totalPages"
+    (click)="loadOrders(currentPage + 1)">
+    Suivant <i class="bi bi-chevron-right"></i>
+  </button>
+</div>
+
   </div>
 </div>

@@ -35,3 +35,21 @@
 .table-canceled:hover {
   background-color: #f8d7da !important; // Rouge clair
 }
+.address-preview {
+  cursor: help;
+  position: relative;
+  max-width: 200px;
+  display: block;
+  
+  &:hover::after {
+    content: attr(title);
+    position: absolute;
+    background: rgb(3, 170, 248);
+    border: 1px solid #ff0606;
+    padding: 8px;
+    z-index: 1500;
+   bottom: 100%;
+    left: 0;
+    box-shadow: 2px 2px 5px rgb(243, 3, 3);
+  }
+}

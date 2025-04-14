@@ -2,13 +2,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { AuthService } from './auth.service';
-import { BehaviorSubject, Observable, map } from 'rxjs';
+import { BehaviorSubject, Observable, map,throwError } from 'rxjs';
+import { catchError, tap  } from 'rxjs/operators';
 
 // Définition des interfaces
 export interface OrderItem {
-  product_id: number;
+  product: ProductDetails;
   quantity: number;
   price: number;
+
 }
 
 export interface ProductDetails {
@@ -19,12 +21,22 @@ export interface ProductDetails {
 
 export interface Order {
   id: number;
+  user_id: number;
   user: { name: string; email: string };
   total: number;
   status: string;
   delivery_status: string;
   created_at: Date;
+  updated_at: Date;
+  address: {         // Ajouté
+    street: string;
+    city: string;
+    postal_code: string;
+    country: string;
+  };
+  phone: string;
   is_overdue: boolean;
+  stripe_payment_id?: string;
   items: Array<{
     product: ProductDetails;
     quantity: number;
@@ -34,19 +46,54 @@ export interface Order {
 // Interface pour la réponse API
 interface ApiOrderResponse {
   id: number;
+  user_id: number;
   user: { name: string; email: string };
   total: number;
   status: string;
   delivery_status: string;
-  created_at: string; // Date en string depuis l'API
+  created_at: string;
+  updated_at: string; 
+  address: { // Ajouter ces champs
+    street: string;
+    city: string;
+    postal_code: string;
+    country: string;
+  };
+  phone: string; // Ajouter
   items: Array<{
     product: ProductDetails;
     quantity: number;
   }>;
+  stripe_payment_id?: string;
 }
+export interface PaginatedOrderResponse {
+  data: Order[];
+  current_page: number;
+  last_page: number;
+  per_page: number;
+  total: number;
+  from?: number;
+  to?: number;
+  links: {
+    url: string | null;
+    label: string;
+    active: boolean;
+  }[];
+}
+
 interface PaginatedApiResponse {
   data: ApiOrderResponse[];
-  // ... autres propriétés de pagination
+  current_page: number;
+  last_page: number;
+  per_page: number;
+  total: number;
+  from?: number;
+  to?: number;
+  links: {
+    url: string | null;
+    label: string;
+    active: boolean;
+  }[];
 }
 
 @Injectable({
@@ -81,19 +128,45 @@ export class OrderService {
     return this.http.post(`${environment.apiUrl}/orders`, orderData);
   }
   
-  getAdminOrders(): Observable<Order[]> {
-    return this.http.get<PaginatedApiResponse>(this.apiUrl).pipe(
-      map(response => response.data.map(apiOrder => ({
-        ...apiOrder,
-        created_at: new Date(apiOrder.created_at),
-        is_overdue: this.checkOverdue(new Date(apiOrder.created_at), apiOrder.delivery_status)
-      })))
-    );
+  getAdminOrders(page: number = 1, perPage: number = 20): Observable<PaginatedOrderResponse> {
+    return this.http.get<PaginatedApiResponse>(`${this.apiUrl}?page=${page}&per_page=${perPage}`)
+      .pipe(
+        tap(response => console.log('Réponse API:', response)), // Pour vérifier le format
+        map(response => ({
+          data: response.data.map(apiOrder => this.transformOrder(apiOrder)),
+          current_page: response.current_page,
+          last_page: response.last_page,
+          per_page: response.per_page,
+          total: response.total,
+          links: response.links
+        })),
+        catchError(err => {
+          console.error("Erreur chargement commandes", err);
+          return throwError(err);
+        })
+      );
   }
+  
   private transformOrder(apiOrder: ApiOrderResponse): Order {
     return {
-      ...apiOrder,
+      id: apiOrder.id,
+      user_id: apiOrder.user_id,
+      user: apiOrder.user,
+      total: apiOrder.total,
+      status: apiOrder.status,
+      delivery_status: apiOrder.delivery_status,
       created_at: new Date(apiOrder.created_at),
+      updated_at: new Date(apiOrder.updated_at),
+      address: apiOrder.address,
+      phone: apiOrder.phone,
+      items: apiOrder.items.map(item => ({
+        product: {
+          product_id: item.product.product_id,
+          name: item.product.name,
+          price: item.product.price
+        },
+        quantity: item.quantity
+      })),
       is_overdue: this.checkOverdue(new Date(apiOrder.created_at), apiOrder.delivery_status)
     };
   }
@@ -134,11 +207,9 @@ export class OrderService {
   getLastOrder() {
     return this.lastOrder.value;
   }
-  
-  getOrderFromApi() {
-    return this.http.get(`${this.apiUrl}/orders/${this.lastOrder.value.id}`);
+  getOrderFromApi(): Observable<Order> {
+    return this.http.get<Order>(`${environment.apiUrl}/orders/${this.lastOrder.value.id}`);
   }
-  
   downloadInvoice() {
     return this.http.get(`${this.apiUrl}/orders/${this.lastOrder.value.id}/invoice`, 
       { responseType: 'blob' });
