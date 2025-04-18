@@ -17,6 +17,7 @@
 .btn-sm {
   padding: 0.25rem 0.5rem;
   font-size: 0.875rem;
+  
 }
 .table-delivered {
   background-color: #9ff3a6 !important; // Vert très clair
@@ -60,16 +61,37 @@
     box-shadow: 2px 2px 5px rgb(243, 3, 3);
   }
 }
+.btn-success{
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background-color: #05c205;
+    color: white !important;
+  }
+}
 
 .btn-outline-danger {
   transition: all 0.3s ease;
   
   &:hover {
-    background-color: #dc3545;
+    background-color: #dc6f35;
     color: white !important;
   }
 }
 
 .spinner-border-sm.me-2 {
   margin-right: 0.3rem;
+}
+.btn-danger {
+  transition: all 0.3s ease;
+  width: 100%;
+  &:hover {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    transform: scale(1.05);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+  }
 }

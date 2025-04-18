@@ -183,6 +183,14 @@ updateDeliveryStatus(orderId: number, status: string): Observable<Order> {
     }
   );
 }
+deleteOrder(orderId: number): Observable<any> {
+  return this.http.delete(`${this.apiUrl}/${orderId}`, {
+    headers: {
+      Authorization: `Bearer ${this.authService.getToken()}`,
+      'Content-Type': 'application/json'
+    }
+  });
+}
   private checkOverdue(createdAt: Date, deliveryStatus: string): boolean {
     const hoursDiff = (Date.now() - createdAt.getTime()) / 1000 / 60 / 60;
     return hoursDiff > 72 && deliveryStatus === 'pending';

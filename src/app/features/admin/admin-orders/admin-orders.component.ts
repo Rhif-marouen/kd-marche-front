@@ -46,34 +46,23 @@ export class AdminOrdersComponent implements OnInit {
     });
   }
   updateStatus(orderId: number, newStatus: 'delivered' | 'canceled') {
-    // Configuration des messages de confirmation
     const confirmationMessages = {
-      delivered: 'Marquer comme livrée et envoyer un email de confirmation ?',
-      canceled: 'Confirmer l\'annulation définitive de cette commande ?'
+      delivered: 'Marquer cette commande comme livrée ?',
+      canceled: 'Confirmer l\'annulation de cette commande ?'
     };
   
-    if (!confirm(confirmationMessages[newStatus])) {
-      this.updatingOrders[orderId] = false;
-      return;
-    }
+    if (!confirm(confirmationMessages[newStatus])) return;
   
     this.updatingOrders[orderId] = true;
   
     this.orderService.updateDeliveryStatus(orderId, newStatus).subscribe({
       next: () => {
-        this.loadOrders(); // Recharge les données actualisées
+        this.loadOrders(); // Rafraîchit la liste avec le nouveau statut
         this.updatingOrders[orderId] = false;
-        
-        const successMessages = {
-          delivered: 'Statut mis à jour et email envoyé !',
-          canceled: 'Commande annulée avec succès'
-        };
-        alert(successMessages[newStatus]);
       },
       error: (err) => {
         this.updatingOrders[orderId] = false;
-        alert(`Erreur: ${err.error?.message || err.message}`);
-        console.error('Détails de l\'erreur:', err);
+        alert('Erreur: ' + err.message);
       }
     });
   }
@@ -96,5 +85,22 @@ export class AdminOrdersComponent implements OnInit {
 
   toggleOrderDetails(order: Order) {
     this.selectedOrder = this.selectedOrder?.id === order.id ? null : order;
+  }
+  deleteOrder(orderId: number) {
+    if (confirm('Supprimer définitivement cette commande de la liste ?')) {
+      this.updatingOrders[orderId] = true;
+      
+      this.orderService.deleteOrder(orderId).subscribe({
+        next: () => {
+          this.orders = this.orders.filter(order => order.id !== orderId);
+          this.updatingOrders[orderId] = false;
+          alert('Commande supprimée avec succès');
+        },
+        error: (err) => {
+          this.updatingOrders[orderId] = false;
+          alert('Erreur lors de la suppression : ' + err.message);
+        }
+      });
+    }
   }
 }

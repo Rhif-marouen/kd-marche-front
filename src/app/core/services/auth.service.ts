@@ -12,6 +12,7 @@ interface LoginResponse {
   user: User;
 }
 
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly tokenKey = 'auth_token';
@@ -142,12 +143,22 @@ register(userData: { name: string; email: string; password: string }): Observabl
     return throwError(() => error);
   }
 
-  updateUserSubscriptionStatus(isActive: boolean) {
-    const currentUser = this.currentUser();
-    if (currentUser) {
-      this.currentUser.set({ ...currentUser, is_active: isActive });
-    }
+// auth.service.ts
+updateUser(updates: Pick<User, 'name' | 'email'>): void {
+  const currentUser = this.currentUser();
+  if (currentUser) {
+    this.http.patch<User>(
+      `${environment.apiUrl}/users/${currentUser.id}`, 
+      updates, // <-- Seuls name/email sont autorisés
+      { headers: this.getAuthHeaders() }
+    ).subscribe({
+      next: (user) => this.currentUser.set(user),
+      error: (err) => this.handleError(err, 'Échec de la mise à jour')
+    });
   }
+}
+  
+
   isAuthenticated(): boolean {
     return !!this.user; // Adaptez à votre logique d'authentification
   }

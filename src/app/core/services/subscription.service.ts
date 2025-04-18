@@ -7,11 +7,10 @@ import { Observable } from 'rxjs';
 export class SubscriptionService {
   constructor(private http: HttpClient) {}
 
-  createSubscription(paymentMethodId: string, userId: number) {
+  createSubscription(paymentMethodId: string, userId: number): Observable<any> {
     return this.http.post(`${environment.apiUrl}/subscription/create`, {
       payment_method: paymentMethodId,
-      userId,
-
+      user_id: userId
     });
   }
 }

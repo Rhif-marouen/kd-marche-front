@@ -1,1 +1,71 @@
-<p>users-list works!</p>
+<!-- admin-users.component.html -->
+<div class="container mt-4">
+  <h2 class="text-center mb-4">Gestion des Utilisateurs</h2>
+
+  <div class="mb-3">
+    <input type="email" 
+           [(ngModel)]="searchEmail" 
+           (input)="searchUsers()"
+           placeholder="Rechercher par email..."
+           class="form-control w-50 mx-auto">
+  </div>
+
+  <div *ngIf="isLoading" class="text-center">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Chargement...</span>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table *ngIf="!isLoading" class="table table-hover align-middle mx-auto">
+      <thead class="table-light">
+        <tr>
+          <th>Nom</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>État Abonnement</th>
+          <th>Stripe ID</th>
+          <th>Fin Abonnement</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users" 
+            [ngClass]="{
+              'admin-row': user.is_admin,
+              'subscribed-row': !user.is_admin && user.is_active,
+              'default-row': !user.is_admin && !user.is_active
+            }">
+          <td>{{ user.name }}</td>
+          <td>{{ user.email }}</td>
+          <td>
+            <span class="badge" [ngClass]="user.is_admin ? 'bg-danger' : 'bg-secondary'">
+              {{ user.is_admin ? 'Admin' : 'Client' }}
+            </span>
+          </td>
+          <td>
+            <span class="badge" [ngClass]="user.is_active ? 'bg-success' : 'bg-secondary'">
+              {{ user.is_active ? 'Abonné' : 'Non abonné' }}
+            </span>
+          </td>
+          <td>{{ user.stripe_id || '-' }}</td>
+
+          
+          <td>
+            <span *ngIf="!user.is_admin">
+              {{ user.subscription_end_at ? (user.subscription_end_at |date:'dd/MM/yyyy') : '--/--/----' }}
+            </span>
+            <span *ngIf="user.is_admin">N/A</span>
+          </td>
+          <td>
+            <button (click)="toggleAdmin(user)" 
+                    class="btn btn-sm"
+                    [ngClass]="user.is_admin ? 'btn-danger' : 'btn-primary'">
+              {{ user.is_admin ? 'Retirer admin' : 'Promouvoir admin' }}
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -10,6 +10,7 @@ import { CartComponent } from './features/user/carts/cart/cart.component';
 import { CheckoutOrderComponent } from './features/checkout/checkout-order/checkout-order.component';
 import { AdminOrdersComponent } from './features/admin/admin-orders/admin-orders.component';
 import { CheckoutFormComponent } from './features/checkout/checkout-form/checkout-form.component';
+import { AdminUsersComponent } from './features/admin/users-list/users-list.component';
 export const routes: Routes = [
   { 
     path: 'products', 
@@ -42,7 +43,8 @@ export const routes: Routes = [
   {
     path: 'checkout',
     component: CheckoutComponent,
-    canActivate: [paymentGuard] // Protection par guard
+    canActivate: [paymentGuard],
+    
   },
   { 
     path: 'product/:id', 
@@ -63,6 +65,11 @@ export const routes: Routes = [
   {
     path: 'admin/orders',
     component: AdminOrdersComponent,
+    canActivate: [authGuard, adminGuard]
+  },
+  {
+    path: 'admin/users',
+    component: AdminUsersComponent,
     canActivate: [authGuard, adminGuard]
   }
 

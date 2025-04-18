@@ -17,7 +17,7 @@
             <th>Total</th>
             <th>Date paiment</th>
             <th>Statut Livrison</th>
-            <th>Date Livrison</th>
+            <th>Date mise à jours</th>
             <th>Adresse client</th>
             <th>Telephone</th>
             <th>Actions</th>
@@ -45,7 +45,7 @@
                 {{ order.is_overdue ? 'EN RETARD' : (order.delivery_status | uppercase) }}
               </span>
             </td>
-            <td>{{ order.created_at | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td>{{ order.updated_at | date:'dd/MM/yyyy HH:mm' }}</td>
             <td>
               <span class="address-preview" [title]="getFullAddress(order.address)">
                 {{ getAddressPreview(order.address) }}
@@ -55,24 +55,32 @@
             <td>{{ order.phone || 'indisponible' }}</td>
             <td>
               <div class="d-flex gap-2">
-                
+                <!-- Bouton Livrer -->
                 <button *ngIf="order.delivery_status !== 'delivered' && order.delivery_status !== 'canceled'"
-                (click)="updateStatus(order.id, 'delivered')"
-                [disabled]="order.delivery_status === 'delivered' || updatingOrders[order.id]"
-                class="btn btn-sm btn-success">
-          <span *ngIf="updatingOrders[order.id]" 
-                class="spinner-border spinner-border-sm me-2"></span>
-          {{ order.delivery_status === 'delivered' ? 'Livrée ✓' : 'Livrer' }}
-        </button>
-
-              <button *ngIf="order.delivery_status !== 'canceled'"
-              (click)="updateStatus(order.id, 'canceled')"
-              [disabled]="updatingOrders[order.id]"
-              class="btn btn-sm btn-outline-danger">
-        <span *ngIf="updatingOrders[order.id]" 
-              class="spinner-border spinner-border-sm"></span>
-        Annuler
-      </button>
+                        (click)="updateStatus(order.id, 'delivered')"
+                        [disabled]="updatingOrders[order.id]"
+                        class="btn btn-sm btn-success">
+                  <span *ngIf="updatingOrders[order.id]" class="spinner-border spinner-border-sm me-2"></span>
+                  Livrer
+                </button>
+            
+                <!-- Bouton Annuler (visible uniquement si non livré) -->
+                <button *ngIf="order.delivery_status !== 'delivered' && order.delivery_status !== 'canceled'"
+                        (click)="updateStatus(order.id, 'canceled')"
+                        [disabled]="updatingOrders[order.id]"
+                        class="btn btn-sm btn-outline-danger">
+                  <span *ngIf="updatingOrders[order.id]" class="spinner-border spinner-border-sm me-2"></span>
+                  Annuler
+                </button>
+            
+                <!-- Bouton Supprimer (visible après livraison) -->
+                <button *ngIf="order.delivery_status === 'delivered'||order.delivery_status === 'canceled'"
+                        (click)="deleteOrder(order.id)"
+                        [disabled]="updatingOrders[order.id]"
+                        class="btn btn-sm btn-danger">
+                  <span *ngIf="updatingOrders[order.id]" class="spinner-border spinner-border-sm me-2"></span>
+                  Supprimer
+                </button>
               </div>
             </td>
           </tr>

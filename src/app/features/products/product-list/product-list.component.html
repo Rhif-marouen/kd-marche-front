@@ -17,7 +17,7 @@
       <div class="product-footer">
         <span class="price">{{ product.price | currency:'EUR' }}</span>
         <span class="quality" [ngClass]="'quality-' + (product.quality || '')">
-          Qualité {{ product.quality }}
+          Qualité {{ product.quality || '-' }}
         </span>
       </div>
     </mat-card-content>
