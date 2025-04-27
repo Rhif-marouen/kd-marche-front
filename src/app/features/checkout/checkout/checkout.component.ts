@@ -110,7 +110,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
       // Récupérer le payment_method
       const { error, paymentMethod } = await this.stripe.createPaymentMethod({
         type: 'card',
-        card: this.cardElement, // <-- cardElement déjà vérifié
+        card: this.cardElement, 
       });
   
       if (error || !paymentMethod) throw error;
@@ -130,10 +130,12 @@ export class CheckoutComponent implements OnInit, OnDestroy {
         );
         if (confirmError) throw confirmError;
       }
-  
-      // Redirection
-      setTimeout(() => this.router.navigate(['/profile']), 1000);
       
+
+      // Redirection
+      setTimeout(() => this.router.navigate(['/profile']), 3000);
+     
+      this.authService.refreshUserProfile();
     } catch (err: any) {
       this.errorMessage = this.handleError(err);
       console.error('Erreur:', err);

@@ -35,7 +35,7 @@ export class CheckoutOrderComponent implements OnInit {
   async handlePayment() {
     this.isLoading = true;
     const orderData = this.orderService.getTempOrderData();
-  
+    const items = this.cartService.getCartItems();
     if (!orderData) {
       this.router.navigate(['/checkout-form']);
       return;

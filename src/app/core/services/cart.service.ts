@@ -45,8 +45,27 @@ export class CartService {
   
     this.cartItems.set(updatedItems); // mise à jour du signal
   }
+  verifyStock(): boolean {
+    const items = this.cartItems();
+    for (const item of items) {
+      if (item.quantity <= 0) {
+        this.snackBar.open('La quantité doit être supérieure à zéro.', 'Fermer', {
+          duration: 3000,
+          panelClass: ['snackbar-error']
+        });
+        return false;
+      }
+      if (item.stock !== undefined && item.quantity > item.stock) {
+        this.snackBar.open('Quantité demandée supérieure au stock disponible.', 'Fermer', {
+          duration: 3000,
+          panelClass: ['snackbar-error']
+        });
+        return false;
+      }
+    }
+    return true; 
+  }
   
-
   clearCart(): void {
     this.cartItems.set([]);
   }

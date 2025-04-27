@@ -4,6 +4,7 @@ import { environment } from '../../../environments/environment';
 import { AuthService } from './auth.service';
 import { BehaviorSubject, Observable, map,throwError } from 'rxjs';
 import { catchError, tap  } from 'rxjs/operators';
+import { CartItem } from '../models/cartItem.model';
 
 // Définition des interfaces
 export interface OrderItem {
@@ -53,7 +54,7 @@ interface ApiOrderResponse {
   delivery_status: string;
   created_at: string;
   updated_at: string; 
-  address: { // Ajouter ces champs
+  address: { 
     street: string;
     city: string;
     postal_code: string;
@@ -146,6 +147,12 @@ export class OrderService {
         })
       );
   }
+  checkStock(items: CartItem[]): Observable<any> {
+    return this.http.post<{ valid: boolean, message?: string }>(
+        `${this.apiUrl}/check-stock`, 
+        { items }
+    );
+}
   
   private transformOrder(apiOrder: ApiOrderResponse): Order {
     return {

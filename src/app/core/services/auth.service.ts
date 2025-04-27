@@ -157,6 +157,11 @@ updateUser(updates: Pick<User, 'name' | 'email'>): void {
     });
   }
 }
+public refreshUserProfile(): void {
+  this.http.get<User>(`${environment.apiUrl}/users/${this.currentUser()?.id}`)
+    .pipe(tap(user => this.currentUser.set(user)))
+    .subscribe();
+}
   
 
   isAuthenticated(): boolean {

@@ -5,6 +5,9 @@
     <div id="card-element" class="stripe-card"></div>
     <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
   </div>
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+</div>
 
   <button 
     mat-raised-button 

@@ -34,10 +34,16 @@ export class CartComponent implements OnInit {
   }
 
   proceedToCheckout(): void {
+    if (!this.cartService.verifyStock()) {
+      return; // Stock ou quantité invalide, on bloque
+    }
+  
     if (this.cartService.getCartItems().length > 0) {
-      this.router.navigate(['/checkout-form']); // Redirection vers le formulaire
+      this.router.navigate(['/checkout-form']);
     } else {
       alert('Votre panier est vide !');
     }
   }
+  
+  
 }
