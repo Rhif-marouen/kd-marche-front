@@ -33,7 +33,7 @@ export class UserService {
 // Correction dans user.service.ts
 toggleAdminStatus(user: User): Observable<User> {
   return this.http.patch<User>(
-    `${this.apiUrl}/${user.id}`,
+      `${this.apiUrl}/${user.id}/toggle-admin`,
     { is_admin: !user.is_admin }, // Corps de la requête
     { // Options séparées
       headers: {
@@ -43,4 +43,4 @@ toggleAdminStatus(user: User): Observable<User> {
     }
   );
 }
-}
+} 

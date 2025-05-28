@@ -1,4 +1,4 @@
-.dashboard-container {
+/*.dashboard-container {
     padding: 2rem;
     max-width: 1200px;
     margin: 0 auto;
@@ -61,4 +61,88 @@
         height: auto;
       }
     }
-  }
+  } */
+   /* dashboard.component.css */
+.dashboard-title {
+  color: #2c3e50;
+  font-weight: 500;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 0.5rem;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  display: flex;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+}
+
+.card-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 80px;
+}
+
+.user-icon { background: linear-gradient(135deg, #3498db, #1a5f9e); }
+.product-icon { background: linear-gradient(135deg, #2ecc71, #1e8449); }
+.order-icon { background: linear-gradient(135deg, #9b59b6, #7d3c98); }
+.revenue-icon { background: linear-gradient(135deg, #f39c12, #d35400); }
+
+.card-icon mat-icon {
+  color: white;
+  font-size: 2rem;
+  height: auto;
+  width: auto;
+}
+
+.card-content {
+  padding: 1.5rem;
+  flex-grow: 1;
+}
+
+.card-content h3 {
+  margin: 0 0 0.5rem 0;
+  color: #7f8c8d;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.card-content p {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.admin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.admin-actions button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+}

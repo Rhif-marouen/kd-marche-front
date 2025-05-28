@@ -1,1 +1,68 @@
-<p>dashboard works!</p>
+<div class="container mt-4">
+  <h2 class="dashboard-title">Tableau de bord Admin</h2>
+  
+  <div class="stats-grid">
+    <!-- Utilisateurs -->
+    <div class="stat-card">
+      <div class="card-icon user-icon">
+        <mat-icon>people</mat-icon>
+      </div>
+      <div class="card-content">
+        <h3>Utilisateurs</h3>
+        <p>{{ stats().users }}</p>
+      </div>
+    </div>
+
+    <!-- Produits -->
+    <div class="stat-card">
+      <div class="card-icon product-icon">
+        <mat-icon>inventory</mat-icon>
+      </div>
+      <div class="card-content">
+        <h3>Produits</h3>
+        <p>{{ stats().products }}</p>
+      </div>
+    </div>
+
+    <!-- Commandes -->
+    <div class="stat-card">
+      <div class="card-icon order-icon">
+        <mat-icon>shopping_cart</mat-icon>
+      </div>
+      <div class="card-content">
+        <h3>Commandes</h3>
+        <p>{{ stats().orders }}</p>
+      </div>
+    </div>
+
+    <!-- Revenus -->
+    <div class="stat-card">
+      <div class="card-icon revenue-icon">
+        <mat-icon>euro</mat-icon>
+      </div>
+      <div class="card-content">
+        <h3>Revenus</h3>
+        <p>{{ stats().revenue | currency:'EUR' }}</p>
+      </div>
+    </div>
+  </div>
+
+ 
+
+  <div class="admin-actions">
+     <button mat-raised-button color="primary" routerLink="/admin/users">
+      <mat-icon>people</mat-icon>
+      Gérer les utilisateurs
+    </button>
+    
+    <button mat-raised-button color="primary" routerLink="/admin/products">
+      <mat-icon>inventory</mat-icon>
+      Gérer les produits
+    </button>
+    
+    <button mat-raised-button color="primary" routerLink="/admin/orders">
+      <mat-icon>assignment</mat-icon>
+      Gérer les commandes
+    </button>
+  </div>
+</div>
