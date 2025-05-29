@@ -1,32 +1,58 @@
+import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Injectable, Signal } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { environment } from '../../../environments/environment';
-import { AuthService } from './auth.service';
-import { DashboardStats } from '../models/dashboard-stats.model';
+import { DashboardStats, RevenueStats, OrderStats } from '../models/dashboard-stats.model';
 
 @Injectable({ providedIn: 'root' })
 export class AdminService {
-  private stats$ = this.http.get<DashboardStats>(`${environment.apiUrl}/admin/stats`, {
-    headers: {
-      Authorization: `Bearer ${this.authService.getToken()}`
-    }
+  private apiUrl = `${environment.apiUrl}/admin`;
+  
+  stats = signal<DashboardStats>({
+    orders: 0,
+    users: 0,
+    products: 0,
+    revenue: 0
   });
 
-  stats = toSignal(this.stats$, {
-    initialValue: {
-      users: 0,
-      products: 0,
-      orders: 0,
-      revenue: 0
+  revenueStats = signal<RevenueStats>({ monthly: [], by_product: [] });
+  orderStats = signal<OrderStats>({ by_status: [], trend: [] });
+
+  constructor(private http: HttpClient) {
+    this.loadStats();
+  }
+
+  loadStats() {
+    this.http.get<DashboardStats>(`${this.apiUrl}/stats`).subscribe(data => {
+      this.stats.set(data);
+    });
+  }
+
+ getRevenueStats() {
+  this.http.get<RevenueStats>(`${this.apiUrl}/revenue-stats`).subscribe({
+    next: (data) => {
+      console.log('Revenue Stats API Response:', data);
+      this.revenueStats.set(data);
+    },
+    error: (err) => {
+      console.error('Revenue Stats API Error:', err);
     }
   });
-
-  constructor(
-    private http: HttpClient,
-    private authService: AuthService,
-   
-  ) {}
 }
 
-export { DashboardStats };
+ /* getOrderStats() {
+    this.http.get<OrderStats>(`${this.apiUrl}/order-stats`).subscribe(data => {
+      this.orderStats.set(data);
+    });
+  } */
+  getOrderStats() {
+    this.http.get<OrderStats>(`${this.apiUrl}/order-stats`).subscribe({
+      next: (data) => {
+        console.log('Order Stats API Response:', data);
+        this.orderStats.set(data);
+      },
+      error: (err) => {
+        console.error('Order Stats API Error:', err);
+      }
+    });
+  }
+}

@@ -28,7 +28,8 @@
               [ngClass]="{
                 'table-delivered': order.delivery_status === 'delivered',
                 'table-canceled': order.delivery_status === 'canceled',
-                'table-warning': order.is_overdue
+                'table-warning': order.delivery_status === 'overdue',
+                'table-pending': order.delivery_status === 'pending'
               }">
             <td>{{ order.id }}</td>
             <td>{{ order.user.name || 'Non renseigné'}}</td>
@@ -39,10 +40,10 @@
                     [ngClass]="{
                       'bg-success': order.delivery_status === 'delivered',
                       'bg-secondary': order.delivery_status === 'canceled',
-                      'bg-warning': order.is_overdue,
-                      'bg-primary': order.delivery_status === 'pending' && !order.is_overdue
+                      'bg-warning': order.delivery_status==='overdue',
+                      'bg-primary': order.delivery_status === 'pending' 
                     }">
-                {{ order.is_overdue ? 'EN RETARD' : (order.delivery_status | uppercase) }}
+                {{ order.delivery_status==='overdue'? 'EN RETARD' : (order.delivery_status | uppercase) }}
               </span>
             </td>
             <td>{{ order.updated_at | date:'dd/MM/yyyy HH:mm' }}</td>
@@ -87,6 +88,7 @@
         </tbody>
       </table>
     </div>
+    <span></span>
     <!-- Pagination -->
 <div *ngIf="totalPages > 1" class="d-flex justify-content-between align-items-center mt-3">
   <button 

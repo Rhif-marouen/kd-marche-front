@@ -146,3 +146,14 @@
   border-radius: 8px;
   font-weight: 500;
 }
+.chart-container {
+  position: relative;
+  height: 250px;
+  width: 100%;
+}
+
+canvas {
+  width: 100% !important;
+  height: 100% !important;
+    display: block;
+}

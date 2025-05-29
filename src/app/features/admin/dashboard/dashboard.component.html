@@ -54,7 +54,7 @@
       <mat-icon>people</mat-icon>
       Gérer les utilisateurs
     </button>
-    
+
     <button mat-raised-button color="primary" routerLink="/admin/products">
       <mat-icon>inventory</mat-icon>
       Gérer les produits
@@ -65,4 +65,37 @@
       Gérer les commandes
     </button>
   </div>
+  <div class="chart-section">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="chart-card">
+        <h3>Revenus mensuels</h3>
+        <div class="chart-container">
+          <canvas id="revenueChart"></canvas>
+        </div>
+      </div>
+    </div>
+ 
+    <div class="col-md-6">
+      <div class="chart-card">
+        <h3>Statut de livraison</h3>
+        <div class="chart-container">
+          <canvas id="orderStatusChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+   
+
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="chart-card">
+        <h3>Évolution des commandes (30 jours)</h3>
+        <div class="chart-container">
+          <canvas id="orderTrendChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 </div>
